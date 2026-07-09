@@ -26,9 +26,11 @@ Il deploy **non passa da Vercel**. GitHub Actions triggera Mintlify tramite Admi
 1. **Crea il progetto su Mintlify** e collega `247X-devs/laureasi-docs` (branch `main`) nelle [Git Settings](https://app.mintlify.com)
 2. Installa la **Mintlify GitHub App** sul repo (serve a Mintlify per leggere i file al deploy)
 3. Genera una **Admin API key** su [API keys](https://app.mintlify.com/settings/organization/api-keys)
-4. Aggiungi i secret su `247X-devs/laureasi-docs` → Settings → Secrets:
-   - `MINTLIFY_ADMIN_KEY` — chiave admin (`mint_...`)
-   - `MINTLIFY_PROJECT_ID` — ID progetto (stessa pagina API keys)
+4. Aggiungi le credenziali su `247X-devs/laureasi-docs` → Settings → **Secrets and variables → Actions**:
+   - `MINTLIFY_ADMIN_KEY` — chiave admin (`mint_...`) → **Secrets** (consigliato, mascherata nei log)
+   - `MINTLIFY_PROJECT_ID` — ID progetto → **Secrets** o **Variables**
+
+   > Il workflow legge prima i **Secrets** (`secrets.*`), poi le **Variables** (`vars.*`) come fallback. Se le hai messe solo in Variables, prima del fix non venivano trovate.
 5. (Opzionale) Dominio custom `docs.laureasi.it` → CNAME su Mintlify
 
 ### Trigger manuale

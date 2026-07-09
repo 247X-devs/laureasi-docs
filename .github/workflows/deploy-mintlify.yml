@@ -26,6 +26,7 @@ jobs:
 
       - name: Trigger and wait for Mintlify
         env:
-          MINTLIFY_ADMIN_KEY: ${{ secrets.MINTLIFY_ADMIN_KEY }}
-          MINTLIFY_PROJECT_ID: ${{ secrets.MINTLIFY_PROJECT_ID }}
+          # API key: preferisci Secrets (mascherata nei log). Variables funziona come fallback.
+          MINTLIFY_ADMIN_KEY: ${{ secrets.MINTLIFY_ADMIN_KEY || vars.MINTLIFY_ADMIN_KEY }}
+          MINTLIFY_PROJECT_ID: ${{ secrets.MINTLIFY_PROJECT_ID || vars.MINTLIFY_PROJECT_ID }}
         run: node scripts/trigger-mintlify-deploy.mjs
