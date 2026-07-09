@@ -1,46 +1,72 @@
 ---
-title: Guida Admin
-description: Guide operative per redattori e content manager del pannello Laureasi.
+title: Panoramica pannello admin
+description: Indice delle guide operative per il pannello Laureasi, organizzate per area di lavoro.
 ---
 
-Questa sezione contiene guide pensate per **redattori e content manager** — non sono richieste competenze tecniche.
+Guide operative per il [pannello admin](https://admin.laureasi.it), organizzate come nel menu laterale di Payload.
 
 <Note>
 Gli screenshot nelle guide vanno catturati dal pannello reale su `http://localhost:3000`. La checklist completa con i nomi file è in `images/admin/README.md` nel repository.
 </Note>
 
+## Non sai da dove iniziare?
+
+- **Redattore o content manager** → [Percorso consigliato](/inizia/redattori)
+- **Admin operativo (CRM, utenti)** → [Percorso consigliato](/inizia/admin-operativo)
+
 ## CRM e Lead
+
+Gestione contatti, metadati quiz e tracciamento campagne.
 
 <CardGroup cols={2}>
   <Card title="Consultare i Leads" icon="users" href="/admin/leads" />
   <Card title="Metadati nei Leads" icon="code" href="/admin/leads-metadati" />
   <Card title="Tracking UTM" icon="chart-line" href="/admin/tracking" />
-  <Card title="Webhook verso n8n" icon="link" href="/admin/webhook-n8n" />
 </CardGroup>
 
-## Catalogo e contenuti
+## Catalogo percorsi
+
+Lauree, master, moduli e anagrafica università.
 
 <CardGroup cols={2}>
   <Card title="Lauree, Master e Corsi" icon="graduation-cap" href="/admin/percorsi" />
+  <Card title="Master e moduli" icon="book" href="/admin/master-moduli" />
   <Card title="Università" icon="building-columns" href="/admin/universita" />
-  <Card title="Agevolazioni" icon="hand-holding-dollar" href="/admin/agevolazioni" />
-  <Card title="Sconti e Campagne" icon="percent" href="/admin/sconti-e-campagne" />
-  <Card title="In evidenza (Homepage)" icon="star" href="/admin/in-evidenza" />
-  <Card title="Aree tematiche" icon="layer-group" href="/admin/aree" />
-  <Card title="Recensioni" icon="quote-left" href="/admin/recensioni" />
-  <Card title="Blog" icon="newspaper" href="/admin/blog" />
-  <Card title="FAQ" icon="circle-question" href="/admin/faq" />
 </CardGroup>
 
-## Amministrazione
+## Promozioni e prezzi
+
+Sconti, campagne e agevolazioni economiche.
 
 <CardGroup cols={2}>
+  <Card title="Sconti e Campagne" icon="percent" href="/admin/sconti-e-campagne" />
+  <Card title="Agevolazioni" icon="hand-holding-dollar" href="/admin/agevolazioni" />
+</CardGroup>
+
+## Contenuti sito
+
+Homepage, aree, blog, FAQ e recensioni.
+
+<CardGroup cols={2}>
+  <Card title="In evidenza (Homepage)" icon="star" href="/admin/in-evidenza" />
+  <Card title="Aree tematiche" icon="layer-group" href="/admin/aree" />
+  <Card title="Blog" icon="newspaper" href="/admin/blog" />
+  <Card title="FAQ" icon="circle-question" href="/admin/faq" />
+  <Card title="Recensioni" icon="quote-left" href="/admin/recensioni" />
+</CardGroup>
+
+## Configurazione
+
+Accessi, integrazioni e sorgenti dati — solo per amministratori.
+
+<CardGroup cols={2}>
+  <Card title="Webhook verso n8n" icon="link" href="/admin/webhook-n8n" />
   <Card title="Utenti" icon="user-plus" href="/admin/utenti" />
   <Card title="Ruoli utente" icon="shield" href="/admin/ruoli" />
   <Card title="Sorgenti dati" icon="database" href="/admin/sorgenti-dati" />
 </CardGroup>
 
-## Link utili
+## Guide correlate
 
-- [Pannello admin](https://admin.laureasi.it)
-- [Algoritmo di orientamento](/algoritmi/orientamento)
+- [Algoritmo di orientamento](/algoritmi/orientamento) — logica ranking e quiz
+- [Percorso sviluppatori](/inizia/sviluppatori) — documentazione tecnica

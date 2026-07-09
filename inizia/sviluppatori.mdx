@@ -1,0 +1,68 @@
+---
+title: Percorso per sviluppatori
+description: Guida consigliata per sviluppatori che lavorano su admin, frontend, crawler e documentazione Laureasi.
+---
+
+Questo percorso raccoglie setup locale, documentazione tecnica, crawler e changelog. Le guide operative del pannello CMS sono in un'altra sezione.
+
+<Note>
+**Per chi:** Sviluppatori e DevOps  
+**Repository:** [github.com/247X-devs](https://github.com/247X-devs)
+</Note>
+
+## Primi passi
+
+<Steps>
+  <Step title="1. Ambienti e repository">
+    Panoramica di production, develop e i quattro repository del progetto.
+
+    [Vai alla guida →](/sviluppo/ambienti)
+  </Step>
+  <Step title="2. Dev container">
+    Avviare l'ambiente di sviluppo locale con Docker.
+
+    [Vai alla guida →](/sviluppo/dev-container)
+  </Step>
+  <Step title="3. Changelog">
+    Cosa è cambiato nell'ultima release di ogni componente.
+
+    [Vai al changelog →](/changelog)
+  </Step>
+</Steps>
+
+## Documentazione per componente
+
+<CardGroup cols={2}>
+  <Card title="Admin (Payload)" icon="server" href="/piattaforma/admin/perf-cache">
+    Cache, Resend, ranking email API.
+  </Card>
+  <Card title="Frontend" icon="globe" href="/piattaforma/frontend/deployment-checks">
+    Checklist pre-deploy e verifiche Vercel.
+  </Card>
+  <Card title="Crawler" icon="spider" href="/crawler">
+    Edge Functions Supabase per acquisizione e normalizzazione dati.
+  </Card>
+  <Card title="Integrazioni" icon="plug" href="/piattaforma/edge-functions">
+    Edge functions e integrazioni esterne.
+  </Card>
+</CardGroup>
+
+## Repository
+
+| Componente | Repository | Deploy |
+| --- | --- | --- |
+| Admin (Payload CMS) | `247X-devs/laureasi-admin` | Vercel |
+| Frontend | `247X-devs/laureasi-frontend` | Vercel |
+| Crawler | `247X-devs/laureasi-crawler` | Supabase Edge Functions |
+| Documentazione | `247X-devs/laureasi-docs` | Mintlify |
+
+## Ambienti
+
+| Ambiente | Frontend | Admin |
+| --- | --- | --- |
+| Production | [laureasi.it](https://laureasi.it) | [admin.laureasi.it](https://admin.laureasi.it) |
+| Develop | [develop.laureasi.it](https://develop.laureasi.it) | develop admin |
+
+## Logica di prodotto
+
+Per capire come funziona il quiz e il ranking (non solo l'implementazione), leggi [Algoritmo di orientamento](/algoritmi/orientamento) e [Ranking Email API](/piattaforma/admin/ranking-email).

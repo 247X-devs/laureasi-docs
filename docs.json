@@ -17,44 +17,89 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guide",
+        "tab": "Inizia qui",
         "groups": [
           {
-            "group": "Introduzione",
-            "pages": ["index", "changelog/index"]
+            "group": "Benvenuto",
+            "pages": ["index"]
           },
           {
-            "group": "Pannello Admin",
+            "group": "Percorsi per ruolo",
             "pages": [
-              "admin/index",
+              "inizia/redattori",
+              "inizia/admin-operativo",
+              "inizia/sviluppatori"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Pannello Admin",
+        "groups": [
+          {
+            "group": "Panoramica",
+            "pages": ["admin/index"]
+          },
+          {
+            "group": "CRM e Lead",
+            "pages": [
               "admin/leads",
               "admin/leads-metadati",
-              "admin/tracking",
-              "admin/webhook-n8n",
+              "admin/tracking"
+            ]
+          },
+          {
+            "group": "Catalogo percorsi",
+            "pages": [
               "admin/percorsi",
               "admin/master-moduli",
-              "admin/universita",
-              "admin/agevolazioni",
+              "admin/universita"
+            ]
+          },
+          {
+            "group": "Promozioni e prezzi",
+            "pages": [
               "admin/sconti-e-campagne",
+              "admin/agevolazioni"
+            ]
+          },
+          {
+            "group": "Contenuti sito",
+            "pages": [
               "admin/in-evidenza",
               "admin/aree",
-              "admin/recensioni",
               "admin/blog",
               "admin/faq",
+              "admin/recensioni"
+            ]
+          },
+          {
+            "group": "Configurazione",
+            "pages": [
+              "admin/webhook-n8n",
               "admin/utenti",
               "admin/ruoli",
               "admin/sorgenti-dati"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "Prodotto",
+        "groups": [
           {
-            "group": "Algoritmi",
+            "group": "Orientamento e ranking",
             "pages": ["algoritmi/index", "algoritmi/orientamento"]
           }
         ]
       },
       {
-        "tab": "Piattaforma",
+        "tab": "Sviluppo e Release",
         "groups": [
+          {
+            "group": "Setup locale",
+            "pages": ["sviluppo/dev-container", "sviluppo/ambienti"]
+          },
           {
             "group": "Admin (Payload)",
             "pages": [
@@ -68,34 +113,40 @@
             "pages": ["piattaforma/frontend/deployment-checks"]
           },
           {
-            "group": "Integrazioni",
-            "pages": ["piattaforma/edge-functions"]
-          },
-          {
             "group": "Crawler",
             "pages": [
               "crawler/index",
-              "crawler/functions/discover-sources",
-              "crawler/functions/scrape-batch",
-              "crawler/functions/webhook-ingest",
-              "crawler/functions/batch-normalize",
-              "crawler/functions/refresh-fields",
-              "crawler/functions/cleanup-entities",
-              "crawler/functions/reconcile-data-sources",
-              "crawler/functions/assign-areas-to-entities",
-              "crawler/functions/extract-degree-paths",
-              "crawler/functions/extract-degree-paths-batch",
-              "crawler/functions/ingest-degree-paths"
+              {
+                "group": "Acquisizione",
+                "pages": [
+                  "crawler/functions/discover-sources",
+                  "crawler/functions/scrape-batch",
+                  "crawler/functions/webhook-ingest",
+                  "crawler/functions/ingest-degree-paths"
+                ]
+              },
+              {
+                "group": "Normalizzazione",
+                "pages": [
+                  "crawler/functions/batch-normalize",
+                  "crawler/functions/assign-areas-to-entities",
+                  "crawler/functions/extract-degree-paths",
+                  "crawler/functions/extract-degree-paths-batch"
+                ]
+              },
+              {
+                "group": "Manutenzione",
+                "pages": [
+                  "crawler/functions/refresh-fields",
+                  "crawler/functions/reconcile-data-sources",
+                  "crawler/functions/cleanup-entities"
+                ]
+              }
             ]
-          }
-        ]
-      },
-      {
-        "tab": "Sviluppo",
-        "groups": [
+          },
           {
-            "group": "Setup",
-            "pages": ["sviluppo/dev-container", "sviluppo/ambienti"]
+            "group": "Integrazioni",
+            "pages": ["piattaforma/edge-functions"]
           },
           {
             "group": "Changelog",
