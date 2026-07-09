@@ -1,8 +1,9 @@
 name: Deploy Mintlify
 
+# Il deploy su push è gestito dalla Mintlify GitHub App (piano gratuito).
+# L'Admin API POST /project/update richiede un piano Mintlify superiore.
+# Questo workflow resta disponibile per trigger manuale se in futuro si fa upgrade.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -11,7 +12,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Trigger Mintlify deploy
+    name: Trigger Mintlify deploy (Admin API)
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -26,7 +27,6 @@ jobs:
 
       - name: Trigger and wait for Mintlify
         env:
-          # API key: preferisci Secrets (mascherata nei log). Variables funziona come fallback.
           MINTLIFY_ADMIN_KEY: ${{ secrets.MINTLIFY_ADMIN_KEY || vars.MINTLIFY_ADMIN_KEY }}
           MINTLIFY_PROJECT_ID: ${{ secrets.MINTLIFY_PROJECT_ID || vars.MINTLIFY_PROJECT_ID }}
         run: node scripts/trigger-mintlify-deploy.mjs

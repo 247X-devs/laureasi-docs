@@ -17,39 +17,43 @@ Portale documentazione Laureasi, pubblicato su [Mintlify](https://mintlify.com).
 npx mintlify dev
 ```
 
-## Deploy (Mintlify via API)
+## Deploy
 
-Il deploy **non passa da Vercel**. GitHub Actions triggera Mintlify tramite Admin API dopo ogni push su `main`.
+Il deploy **non passa da Vercel**. Su ogni push a `main`, **Mintlify deploya automaticamente** tramite la [GitHub App](https://app.mintlify.com) collegata al repo.
 
 ### Setup una tantum
 
 1. **Crea il progetto su Mintlify** e collega `247X-devs/laureasi-docs` (branch `main`) nelle [Git Settings](https://app.mintlify.com)
-2. Installa la **Mintlify GitHub App** sul repo (serve a Mintlify per leggere i file al deploy)
-3. Genera una **Admin API key** su [API keys](https://app.mintlify.com/settings/organization/api-keys)
-4. Aggiungi le credenziali su `247X-devs/laureasi-docs` → Settings → **Secrets and variables → Actions**:
-   - `MINTLIFY_ADMIN_KEY` — chiave admin (`mint_...`) → **Secrets** (consigliato, mascherata nei log)
+2. Installa la **Mintlify GitHub App** sul repo — è sufficiente per il deploy automatico
+3. (Opzionale) Dominio custom `docs.laureasi.it` → CNAME su Mintlify
+
+### Admin API (solo piano Pro+)
+
+L'endpoint `POST /v1/project/update/{projectId}` richiede un **piano Mintlify superiore**. Sul piano gratuito risponde:
+
+```json
+{"error":"Please upgrade to access this route."}
+```
+
+Se fai upgrade, puoi usare il workflow manuale **Deploy Mintlify** o lo script locale:
+
+1. Genera una **Admin API key** su [API keys](https://app.mintlify.com/settings/organization/api-keys)
+2. Aggiungi su `247X-devs/laureasi-docs` → Settings → **Secrets and variables → Actions**:
+   - `MINTLIFY_ADMIN_KEY` — chiave admin (`mint_...`) → **Secrets**
    - `MINTLIFY_PROJECT_ID` — ID progetto → **Secrets** o **Variables**
-
-   > Il workflow legge prima i **Secrets** (`secrets.*`), poi le **Variables** (`vars.*`) come fallback. Se le hai messe solo in Variables, prima del fix non venivano trovate.
-5. (Opzionale) Dominio custom `docs.laureasi.it` → CNAME su Mintlify
-
-### Trigger manuale
+3. Esegui da Actions → **Deploy Mintlify** → Run workflow
 
 ```bash
 # In locale (dopo export delle env)
 MINTLIFY_ADMIN_KEY=mint_... MINTLIFY_PROJECT_ID=... node scripts/trigger-mintlify-deploy.mjs
-
-# Oppure da GitHub Actions → Deploy Mintlify → Run workflow
 ```
 
-### Flusso CI
+### Flusso CI (piano attuale)
 
 ```
-push main → deploy-mintlify.yml → POST /v1/project/update/{id} → Mintlify rebuild
-sync changelog (bot push su main) → stesso workflow
+push main → Mintlify GitHub App → rebuild automatico
+sync changelog (bot push su main) → stesso meccanismo
 ```
-
-> Se Mintlify è già configurato per auto-deploy alla push via GitHub App, puoi disabilitarlo e usare solo il workflow GHA, oppure lasciare entrambi (deploy ridondante ma innocuo).
 
 ## Changelog automatici
 

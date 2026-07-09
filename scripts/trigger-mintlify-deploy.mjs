@@ -42,6 +42,12 @@ async function api(path, options = {}) {
   }
 
   if (!res.ok) {
+    if (res.status === 401 && text.includes('upgrade')) {
+      throw new Error(
+        'Mintlify Admin API non disponibile sul piano attuale ("Please upgrade to access this route"). ' +
+          'Il deploy automatico via GitHub App su push a main resta attivo — questo script serve solo con piano Pro+.'
+      )
+    }
     throw new Error(`Mintlify API ${res.status} ${path}: ${text}`)
   }
 
