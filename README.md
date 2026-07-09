@@ -1,4 +1,4 @@
-# docs (Laureasi)
+# laureasi-docs
 
 Portale documentazione Laureasi, pubblicato su [Mintlify](https://mintlify.com).
 
@@ -23,10 +23,10 @@ Il deploy **non passa da Vercel**. GitHub Actions triggera Mintlify tramite Admi
 
 ### Setup una tantum
 
-1. **Crea il progetto su Mintlify** e collega `247X-devs/docs` (branch `main`) nelle [Git Settings](https://app.mintlify.com)
+1. **Crea il progetto su Mintlify** e collega `247X-devs/laureasi-docs` (branch `main`) nelle [Git Settings](https://app.mintlify.com)
 2. Installa la **Mintlify GitHub App** sul repo (serve a Mintlify per leggere i file al deploy)
 3. Genera una **Admin API key** su [API keys](https://app.mintlify.com/settings/organization/api-keys)
-4. Aggiungi i secret su `247X-devs/docs` → Settings → Secrets:
+4. Aggiungi i secret su `247X-devs/laureasi-docs` → Settings → Secrets:
    - `MINTLIFY_ADMIN_KEY` — chiave admin (`mint_...`)
    - `MINTLIFY_PROJECT_ID` — ID progetto (stessa pagina API keys)
 5. (Opzionale) Dominio custom `docs.laureasi.it` → CNAME su Mintlify
