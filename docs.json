@@ -27,6 +27,7 @@
               "admin/tracking",
               "admin/webhook-n8n",
               "admin/percorsi",
+              "admin/master-moduli",
               "admin/universita",
               "admin/agevolazioni",
               "admin/sconti-e-campagne",

@@ -24,6 +24,7 @@ Carica qui screenshot **reali** del pannello su `http://localhost:3000`.
 | `percorsi-lista.png` | `/admin/collections/degrees` (o masters/courses) | [Percorsi](/admin/percorsi) |
 | `percorso-modifica.png` | Scheda laurea/master/corso in modifica | [Percorsi](/admin/percorsi) |
 | `in-evidenza-checkbox.png` | Campo "In evidenza" visibile in una scheda | [In evidenza](/admin/in-evidenza) |
+| `master-moduli.png` | Modifica master → tab “Moduli” | [Moduli master](/admin/master-moduli) |
 | `agevolazioni-lista.png` | Lista agevolazioni (tax-breaks) | [Agevolazioni](/admin/agevolazioni) |
 | `universita-scheda.png` | Scheda università con tab Dati principali | [Università](/admin/universita) |
 | `aree-lista.png` | `/admin/collections/areas` | [Aree](/admin/aree) |

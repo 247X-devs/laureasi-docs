@@ -91,6 +91,7 @@ function buildNeedsDetail(adminBase) {
     'tracking-utm.png': { from: withAdminBase(adminBase, '/collections/leads') },
     'percorso-modifica.png': { from: withAdminBase(adminBase, '/collections/degrees') },
     'in-evidenza-checkbox.png': { from: withAdminBase(adminBase, '/collections/degrees') },
+    'master-moduli.png': { from: withAdminBase(adminBase, '/collections/masters'), afterOpen: { clickText: 'Moduli' } },
     'blog-editor.png': { from: withAdminBase(adminBase, '/collections/blog') },
     'utenti-ruolo.png': { from: withAdminBase(adminBase, '/collections/users') },
     'universita-scheda.png': { from: withAdminBase(adminBase, '/collections/universities') },
@@ -246,6 +247,24 @@ async function main() {
       console.warn(`Skipping ${file}: no rows found in ${cfg.from}`)
       continue
     }
+
+    if (cfg.afterOpen?.clickText) {
+      const tab = page.getByRole('tab', { name: cfg.afterOpen.clickText, exact: false })
+      if ((await tab.count()) > 0) {
+        await tab.first().click()
+        await page.waitForLoadState('networkidle')
+        await page.waitForTimeout(600)
+      } else {
+        // fallback: click text element (tabs sometimes are buttons/links)
+        const any = page.getByText(cfg.afterOpen.clickText, { exact: false })
+        if ((await any.count()) > 0) {
+          await any.first().click()
+          await page.waitForLoadState('networkidle')
+          await page.waitForTimeout(600)
+        }
+      }
+    }
+
     await save(file)
   }
 
