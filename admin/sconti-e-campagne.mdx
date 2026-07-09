@@ -68,10 +68,16 @@ Una **Campagna Sconto** definisce chi riceve lo sconto, quando è attiva, quanto
 
 | Valore | Quando usarlo |
 | --- | --- |
-| **Tutti** | Solo con scope Università |
-| **Corso** | Solo i corsi |
-| **Laurea** | Solo le lauree triennali/magistrali |
+| **Tutti** | Tutti i tipi di percorso dell'università selezionata (con scope Università) |
+| **Corso** | Solo i corsi online |
+| **Laurea (tutte)** | Tutte le lauree dell'ateneo (triennali, magistrali e ciclo unico) |
+| **Laurea Triennale** | Solo lauree triennali |
+| **Laurea Magistrale / Ciclo unico** | Solo lauree magistrali e a ciclo unico |
 | **Master** | Solo i master universitari |
+
+<Note>
+Con scope **Università** e target **Laurea Magistrale**, la promozione **non** compare sulle lauree triennali (e viceversa). Il sito rispetta questa distinzione su card, prezzi e banner in pagina laurea.
+</Note>
 
 ### 3.3 Validità temporale
 
@@ -113,7 +119,10 @@ Il campo **Priorità** serve quando più campagne sono attive sulla stessa sched
 
 ### Pannello anteprima nella scheda
 
-Aprendo una scheda trovi un pannello **Sconti** con rette attuali, campagna in corso e anteprima del prezzo scontato.
+Aprendo una scheda percorso trovi il tab **Promozioni** con:
+
+- checkbox **Escludi da promozioni** e **Escludi da agevolazioni** (vedi [Percorsi](/admin/percorsi#esclusioni-da-promozioni-e-agevolazioni))
+- pannello di anteprima con rette attuali, campagna in corso e prezzo scontato
 
 ## 6. Esempi pratici passo-per-passo
 
@@ -126,7 +135,11 @@ Aprendo una scheda trovi un pannello **Sconti** con rette attuali, campagna in c
 
 Campagna con scope **Item specifico**, tipo **Prezzo massimo** `1200`, priorità `10` per battere campagne universitarie.
 
-### Esempio 3 — Sconto personalizzato su tutti i corsi
+### Esempio 3 — Promo solo su lauree magistrali di un ateneo
+
+Campagna con scope **Università**, target **Laurea Magistrale / Ciclo unico**, prezzo massimo o range percentuale. Le triennali dello stesso ateneo non ereditano la promo.
+
+### Esempio 4 — Sconto personalizzato su tutti i corsi
 
 Campagna con range personalizzato min `5`, max `10`, target **Corso**.
 
@@ -141,6 +154,9 @@ Sì. Il sistema controlla le date in tempo reale.
 **Posso modificare un Range Sconto già usato?**
 Sì. La modifica si propaga a tutte le campagne che lo referenziano.
 
+**Come escludo un singolo percorso da una promo universitaria?**
+Apri la scheda del percorso (laurea, master o corso) → tab **Promozioni** → spunta **Escludi da promozioni** e/o **Escludi da agevolazioni**. Vedi [Percorsi](/admin/percorsi#esclusioni-da-promozioni-e-agevolazioni).
+
 ---
 
-*Ultima revisione: aprile 2026*
+*Ultima revisione: luglio 2026*

@@ -30,7 +30,9 @@ Carica qui screenshot **reali** del pannello su `http://localhost:3000`.
 | `aree-lista.png` | `/admin/collections/areas` | [Aree](/admin/aree) |
 | `recensioni-lista.png` | `/admin/collections/testimonials` | [Recensioni](/admin/recensioni) |
 | `blog-lista.png` | `/admin/collections/blog` | [Blog](/admin/blog) |
-| `blog-editor.png` | Articolo blog in modifica | [Blog](/admin/blog) |
+| `blog-editor.png` | Articolo blog in modifica (guida + copertina) | [Blog](/admin/blog) |
+| `blog-copertina-qualita.png` | (opzionale) Pannello controllo qualità copertina | [Blog](/admin/blog) |
+| `percorso-promozioni-tab.png` | (opzionale) Tab Promozioni con checkbox esclusione | [Percorsi](/admin/percorsi) |
 | `faq-gruppi.png` | `/admin/collections/faq-groups` con drag handle | [FAQ](/admin/faq) |
 | `sorgenti-dati.png` | `/admin/collections/data_sources` | [Sorgenti dati](/admin/sorgenti-dati) |
 | `utenti-lista.png` | `/admin/collections/users` | [Utenti](/admin/utenti) |

@@ -1,6 +1,6 @@
 ---
 title: Gestire il Blog
-description: Come creare, modificare e pubblicare articoli del blog.
+description: Come creare, modificare e pubblicare articoli del blog, con specifiche per la copertina.
 ---
 
 ## Dove trovarlo
@@ -11,6 +11,8 @@ Menu laterale → **📝 Contenuti** → **Blog**
   <img src="/images/admin/blog-lista.png" alt="Lista articoli del blog" />
 </Frame>
 
+Nel form di ogni articolo trovi in cima la **guida rapida** espandibile (stesso stile di agevolazioni e campagne sconto), con istruzioni su struttura, copertina, pubblicazione e SEO.
+
 ## Creare un articolo
 
 <Steps>
@@ -19,17 +21,26 @@ Menu laterale → **📝 Contenuti** → **Blog**
   </Step>
   <Step title="Dati principali">
     - **Titolo** — headline dell'articolo
-    - **Slug** — URL (`/blog/[slug]`)
-    - **Categoria** — scegli da quelle esistenti
-    - **Estratto** — sommario per anteprime
-    - **Immagine in evidenza** — cover article
+    - **Slug** — URL pubblico (`/blog/[slug]`); solo minuscole, numeri e trattini
+    - **Categoria** — scegli da quelle esistenti (creale prima in **Categorie Blog**)
+    - **Estratto** — sommario per card e anteprime (consigliato 120–200 caratteri)
+    - **Immagine di copertina** — vedi [specifiche sotto](#immagine-di-copertina)
   </Step>
   <Step title="Contenuto">
-    Scrivi il corpo dell'articolo nell'editor rich text.
+    Scrivi il corpo dell'articolo nell'editor rich text. Usa titoli H2/H3 per articoli lunghi.
   </Step>
-  <Step title="Pubblicazione">
+  <Step title="Tag (opzionale)">
+    Parole chiave interne per organizzazione editoriale (es. `università telematica`, `costi laurea`).
+  </Step>
+  <Step title="Pubblicazione (sidebar)">
     - **Pubblicato** — rende l'articolo visibile sul sito
-    - **In evidenza** — mette l'articolo in evidenza nella sezione blog
+    - **In evidenza** — mette l'articolo in evidenza nella sezione blog e in homepage
+    - **Data pubblicazione** — data mostrata agli utenti (se vuota può usare la data di creazione)
+    - **Autore** — opzionale; compare nel box autore in fondo all'articolo
+  </Step>
+  <Step title="SEO (opzionale)">
+    - **Titolo SEO** — lascia vuoto per usare il titolo principale (max ~60 caratteri)
+    - **Descrizione SEO** — meta description per Google (max 160 caratteri)
   </Step>
   <Step title="Anteprima e salva">
     Usa **Anteprima** per vedere l'articolo su laureasi.it prima di pubblicare.
@@ -39,6 +50,44 @@ Menu laterale → **📝 Contenuti** → **Blog**
 <Frame caption="Editor articolo">
   <img src="/images/admin/blog-editor.png" alt="Editor di un articolo del blog" />
 </Frame>
+
+## Immagine di copertina
+
+La copertina compare nell'articolo, nelle card del blog, in homepage e come anteprima **Open Graph** quando l'articolo viene condiviso su social o messaggistica.
+
+### Specifiche ottimali
+
+| Parametro | Valore consigliato |
+| --- | --- |
+| **Dimensioni ideali** | **1920 × 1080 px** |
+| **Dimensioni minime** | **1280 × 720 px** |
+| **Rapporto d'aspetto** | **16:9** (orizzontale) |
+| **Formato** | JPG (foto) o WebP; PNG solo se serve trasparenza |
+| **Peso file** | ≤ **400 KB** consigliati (massimo consentito **800 KB**) |
+
+### Controllo qualità automatico
+
+Sotto il campo copertina il pannello **Controllo qualità** mostra in tempo reale:
+
+- dimensioni e peso rilevati
+- esito: **conforme**, **accettabile con avvisi** o **non conforme**
+
+Al **salvataggio** l'articolo viene **bloccato** se la copertina:
+
+- è sotto 1280×720 px
+- non rispetta il rapporto 16:9
+- supera 800 KB
+- non è un'immagine JPG, WebP o PNG
+
+<Warning>
+Se non carichi una copertina, il sito usa un'immagine generica Laureasì — meno efficace per click e condivisioni social.
+</Warning>
+
+### Zona sicura e buone pratiche
+
+- Tieni testo, volti e loghi nel **centro 80%** dell'immagine: su Facebook, LinkedIn e WhatsApp l'anteprima può ritagliare i bordi laterali.
+- Evita immagini verticali, quadrate, screenshot con testo piccolo o file sfocati.
+- Nel selettore media compaiono solo file immagine ammessi (JPG, WebP, PNG).
 
 ## Modificare o eliminare
 
