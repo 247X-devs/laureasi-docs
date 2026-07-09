@@ -85,6 +85,21 @@
         ]
       },
       {
+        "tab": "Brand",
+        "groups": [
+          {
+            "group": "Brand Identity",
+            "pages": [
+              "brand/index",
+              "brand/logo",
+              "brand/colori",
+              "brand/regole",
+              "brand/asset"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Prodotto",
         "groups": [
           {

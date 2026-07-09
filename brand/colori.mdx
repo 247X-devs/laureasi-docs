@@ -1,0 +1,77 @@
+---
+title: Colori del marchio
+description: Palette ufficiale LaureaSì — Pantone, RGB, CMYK e HEX per uso digitale e stampa.
+---
+
+I colori ufficiali sono un elemento fondamentale dell'identità visiva. Devono essere usati in modo **coerente e costante** su tutti i supporti, digitali e stampati.
+
+<Warning>
+Non sono ammesse variazioni cromatiche, reinterpretazioni o combinazioni diverse da quelle approvate.
+</Warning>
+
+## Colore istituzionale — primario
+
+Il rosso LaureaSì è il colore distintivo del brand.
+
+<img src="/images/brand/pantone-color-chip-187-c.webp" alt="Pantone 187 C" width="200" />
+
+| Specifica | Valore |
+| --- | --- |
+| **Pantone** | 187 C |
+| **HEX** | `#A6192E` |
+| **RGB** | 166 / 25 / 46 |
+| **CMYK** | 7 / 100 / 82 / 26 |
+
+Usato per il simbolo, gli accenti e gli elementi distintivi del marchio.
+
+## Colore secondario
+
+Il tono scuro caldo accompagna il testo del logotipo e i contenuti editoriali.
+
+<img src="/images/brand/pantone-color-chip-440-c.webp" alt="Pantone 440 C" width="200" />
+
+| Specifica | Valore |
+| --- | --- |
+| **Pantone** | 440 C |
+| **HEX** | `#3A332E` |
+| **RGB** | 58 / 51 / 46 |
+| **CMYK** | 0 / 12 / 21 / 77 |
+
+Usato per testi, logotipo e superfici scure.
+
+## Colori del logo
+
+Il logo deve essere sempre utilizzato nelle colorazioni ufficiali:
+
+| Variante | Colori |
+| --- | --- |
+| **A colori** | Primario `#A6192E` + secondario `#3A332E` |
+| **Monocromatico primario** | Interamente `#A6192E` |
+| **Monocromatico nero** | Interamente nero |
+| **Monocromatico bianco** | Interamente bianco — su fondi colorati o fotografici |
+
+Vedi [Logo e varianti](/brand/logo) per gli esempi visivi.
+
+## Note tecniche
+
+<Note>
+Le conversioni CMYK e RGB sono **approssimazioni tecniche** del colore Pantone originale. Per la stampa professionale, usare sempre il riferimento Pantone.
+</Note>
+
+## Uso digitale
+
+Per siti web, app e documentazione interna:
+
+```css
+:root {
+  --laureasi-primary: #A6192E;
+  --laureasi-secondary: #3A332E;
+  --laureasi-primary-light: #F6D1D7; /* sfondo chiaro, uso UI */
+}
+```
+
+La documentazione Mintlify usa già questi valori in `docs.json`.
+
+## Contrasto e accessibilità
+
+Su fondi chiari, il testo secondario `#3A332E` su bianco garantisce buon contrasto. Il primario `#A6192E` va usato per accenti e CTA, non per lunghi blocchi di testo.
