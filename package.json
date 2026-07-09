@@ -1,0 +1,11 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Documentazione Laureasi — Mintlify",
+  "scripts": {
+    "dev": "mintlify dev",
+    "sync-changelog": "node scripts/sync-changelog.mjs",
+    "deploy": "node scripts/trigger-mintlify-deploy.mjs"
+  }
+}

@@ -1,0 +1,29 @@
+---
+title: Extract Degree Paths
+description: Documentazione edge function extract-degree-paths.
+---
+
+# extract-degree-paths
+
+Estrae e salva i percorsi di laurea (`degrees_paths`) per una specifica laurea a partire dalla relativa data source.
+
+## Endpoint
+
+`POST /functions/v1/extract-degree-paths`
+
+## Parametri (JSON body)
+
+- `degree_id` (number, obbligatorio): ID della laurea da processare
+
+Compatibilita': e' accettato anche `degreeId` (legacy) con warning in `meta.warnings`.
+
+## Casi d'uso
+
+- Trigger manuale su una laurea appena ingestita.
+- Retry mirato in caso di errore su una singola laurea.
+- Debug qualità estrazione percorsi.
+
+## Risposta
+
+- Successo: dettagli estrazione in `data`.
+- Errori tipici: `DEGREE_NOT_FOUND`, `CONFIG_NOT_FOUND`, `EXTRACTION_FAILED`.

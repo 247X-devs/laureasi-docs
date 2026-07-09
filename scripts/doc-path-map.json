@@ -1,0 +1,9 @@
+{
+  "laureasi-admin/src/collections/DiscountCampaigns/": "admin/sconti-e-campagne.mdx",
+  "laureasi-admin/src/collections/DiscountRanges/": "admin/sconti-e-campagne.mdx",
+  "laureasi-admin/src/endpoints/trova-laurea/": "algoritmi/orientamento.mdx",
+  "laureasi-admin/src/lib/workflows/": "piattaforma/edge-functions.mdx",
+  "laureasi-admin/src/lib/edgeFunctions/": "piattaforma/edge-functions.mdx",
+  "laureasi-admin/src/services/email/": "piattaforma/admin/ranking-email.mdx",
+  "laureasi-crawler/supabase/functions/": "crawler/index.mdx"
+}

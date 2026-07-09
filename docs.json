@@ -1,0 +1,106 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Laureasi",
+  "description": "Documentazione ufficiale Laureasi — guide admin, algoritmi, piattaforma e changelog.",
+  "theme": "mint",
+  "colors": {
+    "primary": "#7C3AED",
+    "light": "#EDE9FE",
+    "dark": "#5B21B6"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Introduzione",
+            "pages": ["index", "changelog/index"]
+          },
+          {
+            "group": "Pannello Admin",
+            "pages": ["admin/index", "admin/sconti-e-campagne"]
+          },
+          {
+            "group": "Algoritmi",
+            "pages": ["algoritmi/index", "algoritmi/orientamento"]
+          }
+        ]
+      },
+      {
+        "tab": "Piattaforma",
+        "groups": [
+          {
+            "group": "Admin (Payload)",
+            "pages": [
+              "piattaforma/admin/perf-cache",
+              "piattaforma/admin/resend",
+              "piattaforma/admin/ranking-email"
+            ]
+          },
+          {
+            "group": "Frontend",
+            "pages": ["piattaforma/frontend/deployment-checks"]
+          },
+          {
+            "group": "Integrazioni",
+            "pages": ["piattaforma/edge-functions"]
+          },
+          {
+            "group": "Crawler",
+            "pages": [
+              "crawler/index",
+              "crawler/functions/discover-sources",
+              "crawler/functions/scrape-batch",
+              "crawler/functions/webhook-ingest",
+              "crawler/functions/batch-normalize",
+              "crawler/functions/refresh-fields",
+              "crawler/functions/cleanup-entities",
+              "crawler/functions/reconcile-data-sources",
+              "crawler/functions/assign-areas-to-entities",
+              "crawler/functions/extract-degree-paths",
+              "crawler/functions/extract-degree-paths-batch",
+              "crawler/functions/ingest-degree-paths"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Sviluppo",
+        "groups": [
+          {
+            "group": "Setup",
+            "pages": ["sviluppo/dev-container", "sviluppo/ambienti"]
+          },
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog/index",
+              "changelog/admin",
+              "changelog/frontend",
+              "changelog/crawler"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Sito",
+        "href": "https://laureasi.it"
+      },
+      {
+        "label": "Admin",
+        "href": "https://admin.laureasi.it"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/247X-devs"
+    }
+  }
+}

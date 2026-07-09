@@ -1,0 +1,31 @@
+---
+title: Discover Sources
+description: Documentazione edge function discover-sources.
+---
+
+# discover-sources
+
+Scopre nuove data source candidate partendo dalla source base universita' e dalla mappa URL di Firecrawl.
+
+## Endpoint
+
+`POST /functions/v1/discover-sources`
+
+## Parametri (JSON body)
+
+- `university_id` (number, obbligatorio): ID universita' target
+- `validate_urls` (boolean, opzionale, default `false`): verifica raggiungibilita' URL (HEAD/GET)
+- `ai_filter` (boolean, opzionale, default `false`): applica filtro AI alle URL candidate
+
+Compatibilita': sono accettati anche `universityId`, `validateUrls`, `aiFilter` con warning in `meta.warnings`.
+
+## Casi d'uso
+
+- Discovery iniziale delle URL per una nuova universita'.
+- Refresh periodico delle sorgenti candidate.
+- Riduzione rumore usando scoring + filtro AI + validazione URL.
+
+## Risposta
+
+- Successo: `data.inserted` con numero sorgenti inserite.
+- Errore: formato standard con `error.code`, `error.message`, `error.details`.

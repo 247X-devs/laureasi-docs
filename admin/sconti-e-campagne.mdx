@@ -1,0 +1,146 @@
+---
+title: Sconti e Campagne Sconto
+description: Guida per redattori e content manager — sistema sconti, range e campagne promozionali.
+---
+
+> Guida per redattori e content manager — non sono richieste competenze tecniche.
+
+## Indice
+
+1. [Panoramica del sistema](#1-panoramica-del-sistema)
+2. [Range Sconti — cosa sono e come crearli](#2-range-sconti--cosa-sono-e-come-crearli)
+3. [Campagne Sconto — cosa sono e come crearle](#3-campagne-sconto--cosa-sono-e-come-crearle)
+4. [Come il sistema sceglie quale sconto applicare](#4-come-il-sistema-sceglie-quale-sconto-applicare)
+5. [Dove si vede lo sconto nell'admin](#5-dove-si-vede-lo-sconto-nelladmin)
+6. [Esempi pratici passo-per-passo](#6-esempi-pratici-passo-per-passo)
+7. [Domande frequenti](#7-domande-frequenti)
+
+## 1. Panoramica del sistema
+
+Il sistema di sconti permette di mostrare agli utenti del sito **offerte promozionali** sulle rette dei corsi, delle lauree e dei master, senza dover modificare ogni scheda manualmente.
+
+Funziona in due livelli:
+
+| Livello | Sezione admin | A cosa serve |
+| --- | --- | --- |
+| **Range Sconti** | `💸 Sconti › Range sconti` | Definisce fasce di sconto percentuale riutilizzabili (es. "Dal 10% al 20%") |
+| **Campagne Sconto** | `💸 Sconti › Campagne sconto` | Attiva uno sconto su uno specifico periodo, per una o più schede |
+
+Pensa ai **Range Sconti** come ai "mattoni" e alle **Campagne Sconto** come alle "costruzioni" che li usano.
+
+## 2. Range Sconti — cosa sono e come crearli
+
+Un **Range Sconto** è un template percentuale riutilizzabile. Invece di inserire "dal 10% al 20%" ogni volta che crei una promozione, lo definisci una volta sola e poi le campagne lo richiamano.
+
+### Campi del form
+
+| Campo | Obbligatorio | Descrizione |
+| --- | --- | --- |
+| **Titolo** | Sì | Nome interno per riconoscerlo nella lista (es. `Promo primavera 2026`) |
+| **Percentuale minima** | Sì | Sconto minimo garantito, in % (es. `10`). Deve essere ≤ della massima. |
+| **Percentuale massima** | Sì | Sconto massimo possibile, in % (es. `20`). Deve essere ≥ della minima. |
+| **Label** | Sì | Testo breve che descrive il range, mostrato all'utente finale (es. `Dal 10% al 20%`) |
+| **Attivo** | — | Segnaposto on/off. Solo i range attivi appaiono nel selettore delle campagne. |
+
+<Note>
+Se lo sconto è fisso (es. sempre 15%), imposta sia min che max a `15`. Se invece è un intervallo (es. tra il 10% e il 20%), il sistema mostrerà all'utente un prezzo che tiene conto di entrambi gli estremi.
+</Note>
+
+### Come creare un Range Sconto
+
+1. Vai su `💸 Sconti › Range sconti` nel menu di sinistra
+2. Clicca **Crea nuovo**
+3. Compila tutti i campi obbligatori
+4. Salva
+
+## 3. Campagne Sconto — cosa sono e come crearle
+
+Una **Campagna Sconto** definisce chi riceve lo sconto, quando è attiva, quanto vale e come viene presentata all'utente.
+
+### 3.1 Ambito (Scope)
+
+| Valore | Significato |
+| --- | --- |
+| **Università** | Lo sconto si applica a tutte le schede dell'università selezionata |
+| **Item specifico** | Lo sconto si applica a una sola scheda (corso, laurea o master) |
+
+### 3.2 Target
+
+| Valore | Quando usarlo |
+| --- | --- |
+| **Tutti** | Solo con scope Università |
+| **Corso** | Solo i corsi |
+| **Laurea** | Solo le lauree triennali/magistrali |
+| **Master** | Solo i master universitari |
+
+### 3.3 Validità temporale
+
+| Campo | Descrizione |
+| --- | --- |
+| **Valida dal** | Data e ora di inizio della promozione |
+| **Valida fino al** | Data e ora di scadenza |
+
+Le campagne sono attive solo nell'intervallo di date indicato.
+
+### 3.4 Tipo di sconto
+
+**Tipo A — Range percentuale:** riduzione percentuale sulla retta (range referenziato o personalizzato).
+
+**Tipo B — Prezzo massimo:** tetto massimo alla retta. Esempio: retta `€ 2.000`, max `€ 1.490` → l'utente vede `€ 1.490`.
+
+### 3.5 Priorità
+
+Il campo **Priorità** serve quando più campagne sono attive sulla stessa scheda. Valore più alto = precedenza. Default: `0`.
+
+## 4. Come il sistema sceglie quale sconto applicare
+
+```
+1. Campagne "Item specifico" > Campagne "Università"
+2. A parità di ambito: campagna con Priorità numerica più alta
+3. A parità di priorità: campagna con data di inizio più recente
+4. A parità di data di inizio: campagna creata per ultima
+```
+
+## 5. Dove si vede lo sconto nell'Admin
+
+### Badge nella lista
+
+| Colore badge | Significato |
+| --- | --- |
+| Verde | Sconto percentuale attivo |
+| Blu | Prezzo massimo attivo |
+| Grigio | Nessuna campagna attiva |
+
+### Pannello anteprima nella scheda
+
+Aprendo una scheda trovi un pannello **Sconti** con rette attuali, campagna in corso e anteprima del prezzo scontato.
+
+## 6. Esempi pratici passo-per-passo
+
+### Esempio 1 — Sconto primaverile su tutti i master di un'università
+
+1. Crea Range Sconto: min `10`, max `15`, label `Dal 10% al 15%`
+2. Crea Campagna: scope **Università**, target **Master**, range referenziato, date aprile 2026
+
+### Esempio 2 — Offerta flash su un singolo master
+
+Campagna con scope **Item specifico**, tipo **Prezzo massimo** `1200`, priorità `10` per battere campagne universitarie.
+
+### Esempio 3 — Sconto personalizzato su tutti i corsi
+
+Campagna con range personalizzato min `5`, max `10`, target **Corso**.
+
+## 7. Domande frequenti
+
+**Cosa succede se disattivo una campagna?**
+Viene ignorata dal sistema, anche se le date sono valide.
+
+**Il badge sparisce da solo quando la campagna scade?**
+Sì. Il sistema controlla le date in tempo reale.
+
+**Posso modificare un Range Sconto già usato?**
+Sì. La modifica si propaga a tutte le campagne che lo referenziano.
+
+---
+
+*Ultima revisione: aprile 2026*

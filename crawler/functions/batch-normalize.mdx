@@ -1,0 +1,35 @@
+---
+title: Batch Normalize
+description: Documentazione edge function batch-normalize.
+---
+
+# batch-normalize
+
+Normalizza in batch i campi strutturali di `degrees`, `masters` o `courses` (titoli, prezzi, CFU, campi derivati, score di normalizzazione).
+
+## Endpoint
+
+`POST /functions/v1/batch-normalize`
+
+## Parametri (JSON body)
+
+- `table` (string, opzionale, default `degrees`): tabella target
+- `id_field` (string, opzionale, default `id`): chiave primaria per upsert
+- `entity_type` (string, opzionale): `degree` | `master` | `course`
+- `limit` (number, opzionale, default `1000`): massimo record processati
+- `dry_run` (boolean, opzionale, default `false`): se `true`, non scrive su DB
+- `update_normalization` (boolean, opzionale, default `true`): include solo record con `normalization_score < 1`
+
+Compatibilita': supporto legacy per `idField`, `entityType`, `dryRun`, `updateNormalization` con warning in `meta.warnings`.
+
+## Casi d'uso
+
+- Cleanup periodico dei record ingestiti da scraping.
+- Ricalcolo controllato con `dry_run` prima dell'upsert reale.
+- Migrazione graduale dei dati non ancora normalizzati.
+
+## Risposta
+
+- `data.updated`: record aggiornati
+- `data.errors`: record con errore in upsert
+- `data.report`: stato puntuale per ID

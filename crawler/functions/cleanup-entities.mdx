@@ -1,0 +1,44 @@
+---
+title: Cleanup Entities
+description: Documentazione edge function cleanup-entities.
+---
+
+# cleanup-entities
+
+Esegue cleanup su entita' payload eliminando record corrotti/garbage e, se necessario, relativi blocchi/moduli collegati.
+
+## Endpoint
+
+`POST /functions/v1/cleanup-entities`
+
+## Parametri (JSON body)
+
+- `entity` (string, obbligatorio): `laurea` | `master` | `corso` | `data_sources` | `all`
+- `dry_run` (boolean, opzionale, default `false`): simula il cleanup senza cancellare
+- `limit` (number, opzionale): massimo record da analizzare per entita'
+- `offset` (number, opzionale, default `0`): offset di scansione
+
+Compatibilita': supporto legacy per `dryRun` con warning in `meta.warnings`.
+
+## Casi d'uso
+
+- Rimozione batch di record con titolo/slug non validi.
+- Rimozione di `data_sources` duplicate, orfane o incoerenti rispetto ai campi `related_*`.
+- Verifica preventiva con `dry_run` prima della cancellazione reale.
+- Pulizia incrementale con paginazione (`limit` + `offset`).
+
+## Uso consigliato con riconciliazione
+
+Per evitare cancellazioni premature:
+
+1. Eseguire prima `reconcile-data-sources`.
+2. Rieseguire il check di integrita' dal control plane Payload.
+3. Usare `cleanup-entities` come fase finale di pulizia.
+
+Suggerimento: partire sempre con `dry_run=true` e poi applicare la stessa chiamata con `dry_run=false`.
+
+## Risposta
+
+- `data.total_flagged`: record segnalati
+- `data.total_deleted`: record eliminati (0 in dry run)
+- `data.results`: dettaglio per entita' con motivazioni

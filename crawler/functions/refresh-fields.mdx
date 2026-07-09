@@ -1,0 +1,135 @@
+---
+title: Refresh Fields
+description: Documentazione edge function refresh-fields.
+---
+
+# refresh-fields
+
+Funzione unificata per aggiornare campi dinamici (iscrizioni/scadenze/anno accademico) con flusso a due fasi: **scan** (confronto) e **apply** (aggiornamento mirato).
+
+## Endpoint
+
+`POST /functions/v1/refresh-fields`
+
+## Modalita' (`mode`)
+
+| Mode | Descrizione |
+|---|---|
+| `scope` | Preview dello scope (sorgenti candidate). Equivalente a `dry_run: true` legacy. |
+| `scan` | Confronto con DB. Default `scan_strategy: batch` (async via webhook). Usare `scan_strategy: sync` per scraping sequenziale inline. |
+| `scan_status` | Polling dello stato di uno scan batch (`scan_id` obbligatorio). |
+| `apply` | Applica aggiornamenti. Richiede `report` o `updates` (apply diretto, senza re-scrape). |
+| `batch` | Avvio batch Firecrawl async (comportamento legacy). Update via `webhook-ingest`. |
+
+Se `mode` e' omesso: `dry_run: true` → `scope`, altrimenti → `batch`.
+
+## Parametri comuni
+
+- `university_id` (number, opzionale): filtra per universita'
+- `entity_type` (string, opzionale): `master` | `corso` | `laurea`
+- `source_id` (number, opzionale): forza una data source specifica
+- `source_ids` (number[], opzionale): limita a un sottoinsieme (utile dopo scan)
+- `profile` (string, opzionale): `enrollment` (default) | `expire_date`
+- `fields` (string[], opzionale): subset tra `enrollment_status`, `enrollment_open_date`, `enrollment_close_date`, `academic_year`
+- `only_missing` (boolean, opzionale): default `true`
+- `limit` (number, opzionale, default `100`)
+- `extraction_format` (string, opzionale): `deterministicJson` (default) | `json`
+- `max_age_ms` (number, opzionale): cache Firecrawl in ms (default `172800000` = 48h)
+
+## Scan (`mode: scan`)
+
+### Batch async (default, `scan_strategy: batch`)
+
+1. Crea job in `ingest.refresh_fields_scan_jobs`
+2. Avvia batch Firecrawl con `deterministicJson` + `maxAge`
+3. `webhook-ingest` confronta ogni pagina e salva in `ingest.refresh_fields_scan_items`
+4. Al completamento batch, aggrega il report finale
+
+Risposta immediata:
+- `data.scan_id`: ID per polling
+- `data.status`: `processing` | `completed`
+- `data.batch_ids`: ID batch Firecrawl
+
+Polling:
+
+```json
+{
+  "mode": "scan_status",
+  "scan_id": "uuid-restituito-dallo-scan"
+}
+```
+
+Quando `status: completed`, `data.report` contiene il report completo (come scan sync).
+
+### Sync inline (`scan_strategy: sync`)
+
+Scraping sequenziale sincrono (utile per debug o scope piccoli). Risposta immediata con `data.report`.
+
+## Apply (`mode: apply`)
+
+### Apply diretto (consigliato dopo scan)
+
+Passare il report dello scan:
+
+```json
+{
+  "mode": "apply",
+  "report": { "...": "oggetto report restituito dallo scan" }
+}
+```
+
+Oppure solo gli update:
+
+```json
+{
+  "mode": "apply",
+  "updates": [
+    { "source_id": 101, "fields": { "enrollment_status": "aperte" } }
+  ]
+}
+```
+
+Se non ci sono cambiamenti: `applied: 0` senza errori.
+
+### Apply batch (async, re-scrape)
+
+```json
+{
+  "mode": "apply",
+  "apply_strategy": "batch",
+  "source_ids": [101, 102]
+}
+```
+
+## Flusso consigliato (batch scan)
+
+```bash
+# 1. Avvia scan batch
+curl -X POST .../refresh-fields -d '{
+  "mode": "scan",
+  "university_id": 1,
+  "entity_type": "master",
+  "limit": 20
+}'
+
+# 2. Poll fino a status completed
+curl -X POST .../refresh-fields -d '{
+  "mode": "scan_status",
+  "scan_id": "..."
+}'
+
+# 3. Apply solo se report.summary.with_changes > 0
+curl -X POST .../refresh-fields -d '{
+  "mode": "apply",
+  "report": { ... }
+}'
+```
+
+Da Payload admin: `refresh_mode: "scan"` + `refresh_auto_apply: true` nel update flow.
+
+## Retrocompatibilita'
+
+- `dry_run: true` senza `mode` → `scope`
+- `dry_run: false` senza `mode` → `batch`
+- Parametri camelCase accettati con warning in `meta.warnings`
+- Scan senza `scan_strategy` usa `batch` (non piu' sync sequenziale)

@@ -1,0 +1,76 @@
+---
+title: Algoritmo di Orientamento
+description: Come funziona il test di orientamento Laureasi — scoring, ranking e leve CMS.
+---
+
+Questo documento descrive la logica con cui il **Test di Orientamento** di LaureaSì analizza le risposte dell'utente e propone i 5 percorsi più adatti.
+
+L'algoritmo assegna un **punteggio di compatibilità (0–100)** a ogni corso presente nel catalogo, sommando contributi positivi e negativi in base a 9 criteri di scoring (7 dal quiz, 2 dal CMS). Il risultato finale può essere ulteriormente raffinato da un modello di **Intelligenza Artificiale (GPT)** che valuta sfumature semantiche non catturabili da un semplice score numerico.
+
+## Diagramma 1 — Flusso generale
+
+```mermaid
+flowchart TD
+    START(["Utente inizia il test"])
+    START --> QUIZ["Quiz — 7 domande + contatti"]
+    QUIZ --> CATALOG["Ricerca nel catalogo Laureasi\nfino a 120 candidati"]
+    CATALOG --> SCORE["Calcolo punteggio 0-100\n9 criteri di scoring"]
+    SCORE --> TOP15["I 15 corsi più compatibili"]
+    TOP15 --> AICHECK{"AI disponibile?"}
+    AICHECK -->|"Sì"| AIRERANK["GPT sceglie i migliori 5\ncon motivazione personalizzata"]
+    AICHECK -->|"No / Errore"| LOCAL["Top 5 dal ranking automatico"]
+    AIRERANK --> OUT(["5 percorsi consigliati"])
+    LOCAL --> OUT
+```
+
+## Diagramma 2 — Criteri di punteggio
+
+```mermaid
+flowchart LR
+    Q(["Risposte del quiz"])
+    Q -->|"Area di interesse"| C1["Match area\n+28 / +18 / 0"]
+    Q -->|"Livello cercato"| C2["Livello corretto\n+20 / fino a -30"]
+    Q -->|"Ore/settimana"| C4["Carico sostenibile\nfino a +22 / -20"]
+    Q -->|"Situazione lavoro"| C5["Flessibilità\nfino a +12"]
+    Q -->|"Obiettivo"| C6["Tipo percorso\nfino a +25 / -5"]
+    Q -->|"Ruolo desiderato"| C7["Match parole chiave\n+18 / +8"]
+    Q -->|"Agevolazioni"| C8["Convenzioni ateneo\n+10 / 0"]
+    Q -.->|"Ateneo partner"| C9["is_partner CMS\n+8 / +14"]
+    Q -.->|"Priorità ateneo"| C10["Pegaso / San Raffaele / Mercatorum\nfino a +18"]
+    C1 & C2 & C4 & C5 & C6 & C7 & C8 & C9 & C10 --> TOTAL["Punteggio finale 0-100"]
+```
+
+## Riepilogo criteri e pesi
+
+| # | Criterio | Fonte | Range punti | Note |
+| --- | --- | --- | --- | --- |
+| 1 | Area di interesse | Domanda 3 | +28 / +18 / 0 | Sinonimi espansi automaticamente |
+| 2 | Livello formativo | Domanda 4 | -30 → +20 | Penalità massima se livello sbagliato |
+| 3 | Tempo disponibile | Domanda 6 | -20 → +22 | Corsi brevi vs lauree |
+| 4 | Situazione lavorativa | Domanda 5 | 0 → +12 | Full-time, genitore, part-time |
+| 5 | Obiettivo | Domanda 1 | -5 → +25 | Concorso, completare percorso, crescita |
+| 6 | Ruolo desiderato | Domanda 2 | 0 → +18 | Parole chiave nel titolo |
+| 7 | Agevolazioni | Passo 8 | 0 → +10 | Convenzioni ateneo compatibili |
+| 8 | Ateneo Partner | CMS `is_partner` | 0 → +14 | **Leva principale** per prioritizzare atenei |
+| 9 | Priorità ateneo | ID università CMS | 0 → +18 | Pegaso +18, San Raffaele/Mercatorum +10 |
+
+## Come intervenire sui risultati
+
+<Steps>
+  <Step title="Prioritizzare un ateneo (immediato)">
+    Attivare `is_partner = true` sull'università nel CMS. Aggiunge +8 su lauree/master e +14 su corsi.
+  </Step>
+  <Step title="Aumentare boost partner (codice)">
+    Modificare `PARTNER_UNIVERSITY_BOOST` e `PARTNER_COURSE_BOOST` in `route.ts` dell'endpoint recommend.
+  </Step>
+  <Step title="Slot garantito Pegaso">
+    Se esiste un corso Pegaso compatibile ma fuori top 5, viene inserito in posizione 4 o 5 automaticamente.
+  </Step>
+  <Step title="Guidare la scelta AI">
+    Arricchire il prompt GPT con istruzioni business (es. preferire università X in caso di parità).
+  </Step>
+</Steps>
+
+---
+
+*Versione 1.1 — Giugno 2026 — Uso interno riservato*

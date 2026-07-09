@@ -1,0 +1,53 @@
+---
+title: Edge Functions
+description: Documentazione centralizzata delle Supabase Edge Functions del crawler Laureasi.
+---
+
+Documentazione centralizzata delle Edge Functions presenti nel repository `laureasi-crawler`.
+
+## Standard condiviso
+
+- Metodo HTTP standard: `POST`
+- Parametri standard: `snake_case`
+- Retrocompatibilità: parametri `camelCase` accettati con warning in `meta.warnings`
+- Envelope risposta:
+  - Successo: `success: true`, payload in `data`, metadata in `meta`
+  - Errore: `success: false`, dettagli in `error.code`, `error.message`, `error.details`
+
+## Funzioni disponibili
+
+<CardGroup cols={2}>
+  <Card title="discover-sources" href="/crawler/functions/discover-sources" />
+  <Card title="scrape-batch" href="/crawler/functions/scrape-batch" />
+  <Card title="webhook-ingest" href="/crawler/functions/webhook-ingest" />
+  <Card title="batch-normalize" href="/crawler/functions/batch-normalize" />
+  <Card title="refresh-fields" href="/crawler/functions/refresh-fields" />
+  <Card title="cleanup-entities" href="/crawler/functions/cleanup-entities" />
+  <Card title="reconcile-data-sources" href="/crawler/functions/reconcile-data-sources" />
+  <Card title="assign-areas-to-entities" href="/crawler/functions/assign-areas-to-entities" />
+  <Card title="extract-degree-paths" href="/crawler/functions/extract-degree-paths" />
+  <Card title="extract-degree-paths-batch" href="/crawler/functions/extract-degree-paths-batch" />
+  <Card title="ingest-degree-paths" href="/crawler/functions/ingest-degree-paths" />
+</CardGroup>
+
+## Runbook data source
+
+1. Eseguire il check di integrità dal control plane Payload
+2. `reconcile-data-sources` in `dry_run=true`
+3. `reconcile-data-sources` con `dry_run=false` dopo verifica
+4. Scrape mirato delle righe in `unmatched_for_scrape`
+5. `cleanup-entities` per duplicati/orfani
+
+## Runbook update campi
+
+1. `refresh-fields` con `mode: "scan"`
+2. Verificare `data.report` e `summary.with_changes`
+3. Se `with_changes > 0`, `mode: "apply"` o `refresh_auto_apply: true` dal workflow admin
+
+## Deploy
+
+```bash
+supabase functions deploy --no-verify-jwt
+```
+
+Vedi anche [Edge Functions + Payload CMS](/piattaforma/edge-functions) per l'orchestrazione dal pannello admin.

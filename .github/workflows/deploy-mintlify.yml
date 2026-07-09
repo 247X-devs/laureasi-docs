@@ -1,0 +1,31 @@
+name: Deploy Mintlify
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-mintlify
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Trigger Mintlify deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Trigger and wait for Mintlify
+        env:
+          MINTLIFY_ADMIN_KEY: ${{ secrets.MINTLIFY_ADMIN_KEY }}
+          MINTLIFY_PROJECT_ID: ${{ secrets.MINTLIFY_PROJECT_ID }}
+        run: node scripts/trigger-mintlify-deploy.mjs

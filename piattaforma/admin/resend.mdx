@@ -1,0 +1,142 @@
+---
+title: Integrazione Email Multi-Provider
+description: Integrazione Email Multi-Provider — documentazione tecnica Laureasi.
+---
+
+# Integrazione Email Multi-Provider (Mailpit + Resend)
+
+## Setup Rapido
+
+### Local (Mailpit - SMTP)
+```bash
+# Avvia Mailpit con Docker
+docker run -d --name mailpit \
+  -p 1025:1025 \
+  -p 8025:8025 \
+  axllent/mailpit
+
+# Visualizza email: http://localhost:8025
+```
+
+### Development & Production (Resend)
+Configura via **Vercel Dashboard** le variabili:
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL`
+- `RESEND_FROM_NAME`
+- `ADMIN_EMAIL_NOTIFICATION`
+
+---
+
+## Come Funziona
+
+Il servizio email rileva automaticamente l'ambiente (`APP_ENV`) e sceglie il provider corretto:
+
+| APP_ENV | Provider | Note |
+|---------|----------|------|
+| `local` | **Mailpit (SMTP)** | Cattura email localmente per testing |
+| `develop` | **Resend** | Invia email reali |
+| `production` | **Resend** | Invia email reali |
+
+**Zero cambiamenti di codice** - tutto automatico! ✨
+
+---
+
+## Struttura
+
+```
+src/
+├── services/email/
+│   ├── sendNotification.ts       # Multi-provider (Mailpit + Resend)
+│   ├── templates.ts              # Template HTML riutilizzabili
+│   └── index.ts                  # Export pubblico
+└── collections/
+    ├── Leads/hooks/
+    │   └── sendLeadNotificationEmail.ts
+    └── hooks/
+        └── createEmailNotificationHook.ts
+```
+
+---
+
+## Uso
+
+### Per la collezione Leads (già configurato)
+
+Quando viene creato un nuovo lead → email automatica all'admin con:
+- Nome, email, telefono
+- Fonte del lead
+- Messaggio
+- Link diretto al CMS
+
+### Per altre collezioni
+
+```typescript
+import { createEmailNotificationHook } from '@/collections/hooks/createEmailNotificationHook'
+
+export const Testimonials: CollectionConfig = {
+  hooks: {
+    afterChange: [
+      createEmailNotificationHook({
+        collectionName: 'Testimonials',
+        includeFields: ['author', 'rating', 'content'],
+        onlyOnCreate: true,
+      })
+    ]
+  }
+}
+```
+
+### Uso diretto
+
+```typescript
+import { sendNotificationEmail } from '@/services/email'
+
+await sendNotificationEmail({
+  to: 'info@laureasi.it',
+  subject: 'Titolo',
+  html: '<h1>Contenuto</h1>'
+})
+```
+
+---
+
+## Configurazione Dettagliata
+
+### `.env.local` (Local - Mailpit)
+```bash
+APP_ENV=local
+MAILPIT_SMTP_HOST=localhost
+MAILPIT_SMTP_PORT=1025
+RESEND_FROM_EMAIL=noreply@laureasi.it
+RESEND_FROM_NAME=Laureasi
+ADMIN_EMAIL_NOTIFICATION=info@laureasi.it
+```
+
+### `.env.develop` (Development - Resend)
+```bash
+APP_ENV=develop
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=noreply@laureasi.it
+RESEND_FROM_NAME=Laureasi
+ADMIN_EMAIL_NOTIFICATION=info@laureasi.it
+```
+
+### Vercel Dashboard (Production - Resend)
+Stessi valori di develop, gestiti come **Protected Environment Variables**
+
+---
+
+## Troubleshooting
+
+### Email non appaiono in Mailpit (local)
+1. Verifica che Mailpit sia running: `docker ps | grep mailpit`
+2. Controlla che `MAILPIT_SMTP_HOST=localhost` e `MAILPIT_SMTP_PORT=1025`
+3. Guarda i log con prefisso `[Mailpit]`
+
+### Email non inviate in dev/prod (Resend)
+1. Verifica `RESEND_API_KEY` in Vercel Dashboard
+2. Controlla che `ADMIN_EMAIL_NOTIFICATION` sia valido
+3. Guarda i log con prefisso `[Resend]`
+
+### Link nel CMS non funzionano
+- Controlla `PAYLOAD_PUBLIC_SERVER_URL` (locale: http://localhost:3000)

@@ -1,0 +1,30 @@
+---
+title: Ambienti
+description: Strategia environment del monorepo Laureasi — local, develop, lovable, production.
+---
+
+Il monorepo usa 4 profili applicativi condivisi:
+
+| Profilo | Uso |
+| --- | --- |
+| `local` | Sviluppo in Dev Container |
+| `develop` | Ambiente di staging (develop.laureasi.it) |
+| `lovable` | Override per editing via Lovable |
+| `production` | Produzione (laureasi.it) |
+
+## Regole di precedenza
+
+1. Variabili già definite in shell/CI (priorità massima)
+2. File env del profilo selezionato
+3. Override specifico di `lovable` sopra `develop`
+
+<Note>
+`lovable` eredita da `develop`: in pratica `lovable = develop + override`. Tieni `lovable` minimale, con sole chiavi diverse da `develop`.
+</Note>
+
+## Best practice
+
+- Mantieni i file `*.example` come contratto delle variabili richieste
+- Non committare mai segreti reali
+- Per Resend/Mailpit vedi [Integrazione Email](/piattaforma/admin/resend)
+- Per deploy frontend vedi [Deployment Checks](/piattaforma/frontend/deployment-checks)

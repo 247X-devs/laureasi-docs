@@ -1,0 +1,138 @@
+---
+title: Vercel Deployment Checks
+description: Vercel Deployment Checks — documentazione tecnica Laureasi.
+---
+
+# Vercel Deployment Checks
+
+Questa guida descrive come collegare i check GitHub Actions ai Deployment Checks di Vercel per il frontend Laureasì.
+
+Il progetto deploya tramite **GitHub Actions + Vercel CLI** (`vercel build` → `vercel deploy --prebuilt`), non tramite build Git nativa su Vercel. I gate principali sono già in GHA (`PRERENDER_STRICT`, `verify:prerender`); i Deployment Checks aggiungono un secondo livello sulla **promozione del dominio production/preview**.
+
+## Prerequisiti
+
+1. Repository GitHub collegato al progetto Vercel (Settings → Git).
+2. Secrets in GitHub:
+   - `VERCEL_TOKEN`
+   - `VERCEL_ORG_ID`
+   - `VERCEL_PROJECT_ID`
+3. Env di build (`VITE_GRAPHQL_ENDPOINT`, `VITE_SITE_URL`, …) fornite da `vercel pull` nei workflow.
+
+## Check GitHub da richiedere
+
+I nomi corrispondono al campo `name:` dei job nei workflow:
+
+| Ambiente | Job consigliati |
+|----------|------------------|
+| Production | `Lint · Typecheck · Test`, `Build smoke · Script tests`, `Build & Deploy Production`, `E2E smoke` |
+| Preview | `Lint · Typecheck · Test`, `Build smoke · Script tests`, `Build & Deploy Preview`, `E2E smoke` |
+
+> **Nota:** Lighthouse CI ha `continue-on-error: true` — non usarlo come check bloccante finché non è stabilizzato.
+
+## E2E smoke (Playwright)
+
+Dopo ogni deploy, il job **`E2E smoke`** esegue 6 test browser contro il dominio pubblico dell'ambiente:
+
+| Ambiente | `E2E_BASE_URL` |
+|----------|----------------|
+| Preview / develop | `https://develop.laureasi.it` |
+| Production | `https://laureasi.it` |
+
+Copertura v1 (nessun submit di form reali):
+
+- Home e CTA verso `/trova-laurea`
+- Quiz orientamento: step 1 e interstitial
+- Form `/prenota-consulenza`
+- Index e dettaglio università
+- Pagina corso + modale lead
+
+Esecuzione locale:
+
+```bash
+cd laureasi-frontend
+yarn install
+yarn playwright install chromium
+E2E_BASE_URL=https://develop.laureasi.it yarn test:e2e
+```
+
+In caso di failure in CI, scaricare l'artifact `playwright-report-preview` o `playwright-report-production`.
+
+## Setup Vercel Dashboard
+
+1. Apri **Project → Settings → Git** e verifica il collegamento al repo `laureasi-frontend`.
+2. Vai su **Project → Settings → Deployment Protection** (o **Checks**).
+3. Per **Production**:
+   - Abilita **Deployment Checks** / **Wait for Checks**.
+   - Aggiungi i check GitHub elencati sopra.
+4. Per **Preview** (opzionale ma consigliato):
+   - Abilita check su preview deployments.
+   - Richiedi almeno `Lint · Typecheck · Test`, `Build smoke · Script tests` e `E2E smoke`.
+
+### Commit SHA su deploy CLI
+
+I workflow passano `--meta githubCommitSha=${{ github.sha }}` a `vercel deploy` così Vercel associa il deployment al commit e può attendere i check corretti.
+
+Se i check non compaiono:
+
+- Verifica che il repo sia linkato al progetto Vercel.
+- Controlla che il job GHA abbia completato sullo stesso SHA del deploy.
+- Ripeti il deploy con `--meta githubCommitSha=$GITHUB_SHA` esplicito.
+
+## Setup GitHub Branch Protection
+
+### Branch `main`
+
+Settings → Branches → Add rule:
+
+- Require status checks before merging:
+  - `Lint · Typecheck · Test`
+  - `Build smoke · Script tests`
+  - `E2E smoke` (dopo il primo deploy con la suite attiva)
+- Require branches to be up to date before merging.
+
+### Branch `develop` (preview stabile)
+
+- Require `Lint · Typecheck · Test`
+- Require `Build smoke · Script tests`
+- Require `E2E smoke` (dopo il primo deploy con la suite attiva)
+
+## Gate già attivi in CI/CD
+
+```text
+PR / push
+  → ci.yml: lint, typecheck, vitest
+  → build-smoke: yarn build, test:scripts, test:env
+  → deploy: vercel build (build:seo + PRERENDER_STRICT)
+  → verify:prerender (report + file campione)
+  → vercel deploy --prebuilt
+  → e2e-smoke: Playwright su develop.laureasi.it / laureasi.it
+```
+
+Variabili prerender in deploy:
+
+| Variabile | Valore in CI prod/preview |
+|-----------|---------------------------|
+| `PRERENDER_STRICT` | `true` |
+| `PRERENDER_MAX_ROUTES` | vuoto (tutte le route) |
+| `PRERENDER_CONCURRENCY` | `6` |
+| `SKIP_PRERENDER` | non impostato |
+
+## Verifica manuale post-deploy
+
+```bash
+curl -s https://laureasi.it/percorsi | grep -E '<title>|aria-busy'
+```
+
+Atteso: `<title>` presente, nessun `aria-busy="true"` come unico contenuto del root.
+
+Ripetere su una route dinamica (articolo blog, pagina laurea dalla sitemap).
+
+## Troubleshooting
+
+| Sintomo | Azione |
+|---------|--------|
+| Build prerender fallisce in CI | Leggere `prerender-report.json` nel log/summary; riprodurre con `yarn build:seo` e `PRERENDER_STRICT=true` in locale dopo `vercel pull` |
+| Pagine vuote in produzione | Verificare che `dist/{route}/index.html` esista e che il rewrite SPA sia solo fallback |
+| Check Vercel restano pending | Repo non linkato o SHA deploy diverso dal commit dei check |
+| E2E smoke fallisce | Scaricare report Playwright dall'artifact GHA; riprodurre in locale con `E2E_BASE_URL=<url>` |
+| Build troppo lenta | Monitorare `p95DurationMs` nel report; valutare tuning di `PRERENDER_CONCURRENCY` |

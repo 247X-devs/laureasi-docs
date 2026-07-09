@@ -1,0 +1,56 @@
+---
+title: Ingest Degree Paths
+description: Documentazione edge function ingest-degree-paths.
+---
+
+# ingest-degree-paths
+
+Importa piani di studio (`degrees_paths`) da JSON già scrapato, senza chiamata Firecrawl live.
+
+## Endpoint
+
+`POST /functions/v1/ingest-degree-paths`
+
+## Parametri (JSON body)
+
+- `degree_id` (number, obbligatorio): ID della laurea target
+- `firecrawl_json` (object, obbligatorio): payload con `piani_di_studio` (top-level o sotto `.json`)
+
+Compatibilita': e' accettato anche `degreeId` / `firecrawlJson` (legacy) con warning in `meta.warnings`.
+
+## Differenza vs extract-degree-paths
+
+| | `ingest-degree-paths` | `extract-degree-paths` |
+|---|---|---|
+| Input | JSON già disponibile | Scraping Firecrawl live |
+| Uso tipico | Ops manuale, retry con dump salvato | Automazione / script CLI |
+| Dipendenze | Solo DB | Firecrawl + data source collegata |
+
+Entrambe condividono `ingestDegreePathsFromJson` in `shared/extractDegreePaths.ts`.
+
+## Casi d'uso
+
+- Re-import dopo correzione manuale del JSON estratto.
+- Debug qualità estrazione senza consumare crediti Firecrawl.
+- Migrazione dati da ambiente esterno con payload compatibile.
+
+## Esempio
+
+```bash
+curl -i --location --request POST "https://<project>.supabase.co/functions/v1/ingest-degree-paths" \
+  --header "Authorization: Bearer <service_role_key>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "degree_id": 123,
+    "firecrawl_json": {
+      "piani_di_studio": [
+        { "nome": "Piano A", "anni": [] }
+      ]
+    }
+  }'
+```
+
+## Risposta
+
+- Successo: dettagli ingest in `data`.
+- Errori tipici: `DEGREE_NOT_FOUND`, `INVALID_INPUT`, `EXTRACTION_FAILED`.

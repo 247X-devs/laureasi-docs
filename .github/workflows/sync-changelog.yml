@@ -1,0 +1,74 @@
+name: Sync Changelog
+
+on:
+  repository_dispatch:
+    types: [app-release]
+  workflow_call:
+    inputs:
+      repo:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+      body:
+        required: false
+        type: string
+        default: ''
+    secrets:
+      DOCS_REPO_TOKEN:
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.DOCS_REPO_TOKEN || github.token }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Resolve inputs
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "repo=${{ github.event.client_payload.repo }}" >> "$GITHUB_OUTPUT"
+            echo "version=${{ github.event.client_payload.version }}" >> "$GITHUB_OUTPUT"
+            BODY="${{ github.event.client_payload.body }}"
+          else
+            echo "repo=${{ inputs.repo }}" >> "$GITHUB_OUTPUT"
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+            BODY="${{ inputs.body }}"
+          fi
+          {
+            echo "body<<EOF"
+            echo "$BODY"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update changelog pages
+        run: |
+          node scripts/sync-changelog.mjs \
+            --repo "${{ steps.vars.outputs.repo }}" \
+            --version "${{ steps.vars.outputs.version }}" \
+            --body "${{ steps.vars.outputs.body }}"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add changelog/
+          if git diff --staged --quiet; then
+            echo "No changelog changes to commit."
+            exit 0
+          fi
+          git commit -m "docs(changelog): sync ${{ steps.vars.outputs.repo }} v${{ steps.vars.outputs.version }}"
+          git push

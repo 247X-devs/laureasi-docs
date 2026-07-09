@@ -1,0 +1,49 @@
+---
+title: Webhook Ingest
+description: Documentazione edge function webhook-ingest.
+---
+
+# webhook-ingest
+
+Riceve i webhook Firecrawl, salva il raw payload in ingest e instrada i dati ai processor corretti (`laurea`, `master`, `corso`, `sedi`, `tax_break`, `enrollment-update`).
+
+## Endpoint
+
+`POST /functions/v1/webhook-ingest`
+
+## Parametri (JSON body)
+
+Il body e' quello inviato da Firecrawl. Campi principali:
+
+- `id`: batch ID
+- `type`: `batch_scrape.page` | `batch_scrape.completed` | `batch_scrape.failed`
+- `success`: esito evento
+- `data`: payload pagina/e
+- `metadata`: metadata di batch (include `entity_type`, `mode`, `update_profile`, ecc.)
+
+## Modalita' supportate
+
+1. Ingest entity-based (default)
+- Routing per `entity_type` su processor dedicati (`laurea`, `master`, `corso`, `sedi`, `tax_break`).
+
+2. Ingest update fields
+- Quando `metadata.mode = update_enrollment_fields`, viene usato il processor `enrollment-update`.
+- Questo include i batch avviati da `refresh-fields`.
+
+## Comportamento
+
+1. Valida il metodo HTTP (`POST`).
+2. Salva ogni evento in `ingest.scraping_raw_data` con `source_id` risolto.
+3. Su evento `page`: elabora il payload nel processor corretto in base a `metadata.mode`/`entity_type`.
+4. Su evento `completed`/`failed`: aggiorna lo stato in `ingest.scraping_jobs`.
+
+## Risposta
+
+- Successo: `success: true`, `data.received: true`.
+- Errore: formato standard con `error.code`, `error.message`, `error.details`.
+
+## Note operative
+
+- Il routing del processor `enrollment-update` dipende da `metadata.mode` valorizzato nei batch start.
+- `target_fields` e `default_academic_year` vengono passati via metadata e usati dal processor.
+- In caso di webhook duplicati, i record raw possono duplicarsi: valutare strategie di idempotenza a livello DB.

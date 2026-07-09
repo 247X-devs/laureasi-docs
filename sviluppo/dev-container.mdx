@@ -1,0 +1,39 @@
+---
+title: Dev Container
+description: Avvio rapido dell'ambiente di sviluppo Laureasi con Docker e Dev Containers.
+---
+
+## Avvio rapido
+
+1. **Prerequisiti**:
+   - Docker e Docker Compose
+   - Visual Studio Code
+   - Estensione [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+2. **Primo avvio**:
+   - Apri la cartella principale del progetto (`Laureasi`) in VS Code
+   - Clicca su **"Reopen in Container"**
+   - Attendi il provisioning automatico
+
+3. **Comandi utili** (Makefile):
+
+```bash
+make build   # build di tutti i container
+make up      # avvio di tutti i servizi
+make down    # stop di tutti i servizi
+make logs    # log aggregati
+```
+
+## Servizi
+
+Tutti i servizi (admin, frontend, crawler, mailpit) sono orchestrati tramite Docker Compose. Linting e TypeScript in VS Code riflettono l'ambiente container.
+
+<Note>
+Lavora sempre in Dev Container per evitare problemi di versioni e dipendenze. Se VS Code non propone l'apertura automatica, usa `Dev Containers: Reopen in Container` dal Command Palette (⇧⌘P).
+</Note>
+
+## Documentazione per progetto
+
+- [Admin README](https://github.com/247X-devs/laureasi-admin)
+- [Frontend README](https://github.com/247X-devs/laureasi-frontend)
+- [Crawler README](https://github.com/247X-devs/laureasi-crawler)

@@ -1,0 +1,33 @@
+---
+title: Extract Degree Paths Batch
+description: Documentazione edge function extract-degree-paths-batch.
+---
+
+# extract-degree-paths-batch
+
+Esegue l'estrazione dei percorsi di laurea su un insieme paginato di lauree della stessa universita'.
+
+## Endpoint
+
+`POST /functions/v1/extract-degree-paths-batch`
+
+## Parametri (JSON body)
+
+- `university_id` (number, obbligatorio): universita' target
+- `only_empty` (boolean, opzionale, default `false`): include solo lauree senza percorsi
+- `limit` (number, opzionale, default `5`, max `20`): dimensione pagina
+- `offset` (number, opzionale, default `0`): offset pagina
+
+Compatibilita': supporto legacy per `universityId` e `onlyEmpty` con warning in `meta.warnings`.
+
+## Casi d'uso
+
+- Backfill graduale dei percorsi per universita'.
+- Routine periodica in cron con offset incrementale.
+- Recupero selettivo dei soli record incompleti.
+
+## Risposta
+
+- `data.processed`: esito per singola laurea
+- `data.next_offset`: offset successivo per paginazione
+- `data.total_found`: totale lauree candidabili

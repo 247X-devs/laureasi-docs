@@ -1,0 +1,341 @@
+---
+title: Edge Functions e Payload CMS
+description: Edge Functions e Payload CMS — documentazione tecnica Laureasi.
+---
+
+# Edge Functions + Payload CMS: Flows e Integrazione
+
+## Obiettivo
+
+Definire un modello stabile con:
+
+- flow di acquisizione dati
+- flow di aggiornamento dati
+- orchestrazione da Payload CMS
+- separazione chiara delle responsabilita'
+
+## Stato attuale (valutazione rapida)
+
+La suddivisione corrente ha senso in gran parte:
+
+- Edge Functions: ottime per task I/O intensivi su Supabase e webhook Firecrawl.
+- Payload CMS: ottimo punto di orchestrazione, scheduling, trigger admin e osservabilita' editoriale.
+
+Aree da migliorare:
+
+- Troppe funzioni con semantica simile (alcune sovrapposte).
+- Mancanza di un unico orchestration layer applicativo (workflow end-to-end).
+- Dipendenza forte da chiamate manuali endpoint-by-endpoint.
+
+## Funzioni che hanno poco senso isolate
+
+1. ~~update-expire-date / update-enrollment-fields~~ → convergiti in `refresh-fields` (completato)
+
+2. extract-degree-paths + extract-degree-paths-batch
+
+- Entrambe utili, ma la versione singola dovrebbe essere un caso particolare della batch.
+- Best practice: mantenere entrambe solo se realmente usate per debug/manual retry.
+
+3. cleanup-entities
+
+- Ha senso, ma dovrebbe essere trattata come manutenzione batch pianificata, non come endpoint operativo frequente.
+- Best practice: invocazione solo da job schedulato con dry-run periodico.
+
+## Proposta target: 2 macro-flow
+
+## Flow 1: Acquisizione
+
+Scopo: scoprire nuove sorgenti e ingestire nuovi contenuti.
+
+Step:
+
+1. discover-sources
+2. scrape-batch
+3. webhook-ingest (asincrona su eventi Firecrawl)
+4. batch-normalize (post-ingest)
+5. assign-areas-to-entities (opzionale post-ingest)
+
+Output atteso:
+
+- nuove data source registrate
+- entita' create/aggiornate
+- contenuti normalizzati e categorizzati
+
+## Flow 2: Aggiornamento
+
+Scopo: aggiornare dati sensibili al tempo e mantenere qualita'.
+
+Step:
+
+1. refresh-fields (profili `enrollment` / `expire_date`)
+2. batch-normalize
+3. cleanup-entities (con dry-run prima)
+
+Output atteso:
+
+- date/iscrizioni allineate
+- coerenza campi migliorata
+- riduzione garbage e anomalie
+
+## Come chiamarle da Payload CMS
+
+## Pattern consigliato
+
+Payload non chiama direttamente molte funzioni dal client admin.
+
+Usare invece:
+
+- endpoint server-side in Payload (proxy/orchestrator)
+- job queue interna (task asincroni)
+- log stato workflow su collection dedicata
+
+## Implementazione pratica in Payload
+
+1. Crea collection `edge_workflows`
+
+Campi minimi:
+
+- `type`: acquisition | update
+- `status`: queued | running | completed | failed
+- `input_payload`: json
+- `steps`: json con esiti per step
+- `started_at`, `finished_at`
+- `error`
+
+2. Crea service server-side `EdgeFunctionsClient`
+
+Responsabilita':
+
+- costruire request uniformi
+- chiamare endpoint Supabase Functions
+- propagare correlation id
+- normalizzare errori
+
+3. Crea orchestratori Payload
+
+- `runAcquisitionFlow(university_id, options)`
+- `runUpdateFlow(university_id, options)`
+
+4. Trigger da admin
+
+- Azione custom in admin panel per lanciare flow
+- Salvataggio run su `edge_workflows`
+- Polling stato o webhook callback
+
+## Sicurezza (best practice)
+
+- Chiamate Edge Functions solo da backend Payload.
+- Mai usare chiavi privilegiate in frontend.
+- Se possibile, abilita verifica JWT lato funzione e usa token service role solo server-to-server.
+- Aggiungi rate limit e idempotency key sui flow avviati da Payload.
+
+## Osservabilita'
+
+- Correlation id per ogni run (Payload -> Edge -> log processor).
+- Log strutturati JSON con campi: workflow_id, step, entity_type, university_id.
+- Dashboard minima su Payload con:
+  - ultimi workflow
+  - step falliti
+  - retry suggeriti
+
+## Conviene spostarle su Payload CMS?
+
+Risposta breve: non totalmente.
+
+Ha senso mantenere su Edge Functions:
+
+- webhook-ingest
+- funzioni vicine a Supabase/Firecrawl e batch I/O
+- funzioni che devono scalare separatamente dal CMS
+
+Ha senso spostare su Payload:
+
+- orchestrazione dei flow
+- policy di retry
+- trigger manuali/admin
+- scheduling e governance operativa
+
+Modello ibrido consigliato (best practice):
+
+- Payload = control plane
+- Edge Functions = execution plane
+
+## Refactor consigliato (prossimo step)
+
+1. Introdurre `refresh-fields` unificata (sostituisce update-enrollment-fields + update-expire-date).
+2. Introdurre `run-acquisition-flow` e `run-update-flow` come orchestratori (anche inizialmente semplici wrapper).
+3. Rendere `extract-degree-paths` opzionale come utility debug, con batch come default operativo.
+4. Aggiungere test di contratto endpoint (status + envelope + validazione input).
+5. Aggiungere idempotenza per evitare doppio avvio dello stesso flow in finestre brevi.
+
+## Mappa AS-IS -> TO-BE (priorita' operative)
+
+Obiettivo: ridurre gli entrypoint operativi pubblici, mantenendo le primitive tecniche interne per debug e retry mirati.
+
+### P1 (immediato)
+
+1. `refresh-fields` (entrypoint unico update campi)
+- AS-IS: `update-enrollment-fields`, `update-expire-date` (rimossi)
+- TO-BE: `refresh-fields` con parametri `profile`, `fields`, `only_missing`
+- Stato: completato
+
+2. `run-update-flow` (control plane Payload)
+- AS-IS: catena manuale endpoint-by-endpoint
+- TO-BE: orchestrazione unica da Payload (`/api/workflows/update`)
+- Stato: implementato
+- Gap: allineare i payload admin per usare sempre `refresh-fields`
+
+3. Standard contrattuale unico
+- AS-IS: differenze minori tra funzioni simili
+- TO-BE: input snake_case, envelope standard, warning fallback camelCase
+- Stato: in avanzamento
+
+### P2 (breve termine)
+
+1. `run-acquisition-flow` come unico ingresso operativo acquisizione
+- AS-IS: `discover-sources` + `scrape-batch` spesso invocati manualmente
+- TO-BE: ingresso principale solo via orchestratore Payload
+- Primitive mantenute: `discover-sources`, `scrape-batch`, `batch-normalize`, `assign-areas-to-entities`
+
+2. `data-quality-flow` dedicato
+- AS-IS: `check-data-sources-integrity`, `reconcile-data-sources`, `cleanup-entities` usati separatamente
+- TO-BE: flow unico con step:
+  1) integrity dry
+  2) reconcile dry/apply
+  3) cleanup dry/apply
+- Primitive mantenute: tutte e tre, ma non come ingressi principali
+
+3. Degree paths razionalizzati
+- AS-IS: `extract-degree-paths` + `extract-degree-paths-batch`
+- TO-BE: batch come standard operativo; singola come utility di debug
+
+### P3 (medio termine)
+
+1. Hardening orchestrazione
+- Idempotency key per evitare doppi avvii flow
+- Retry policy per step fallibili
+- Log strutturati per workflow_id/step/entity/university
+
+## Sequenza migrazione consigliata (ondate)
+
+### Onda 1
+
+1. `refresh-fields` e' il default in tutti i percorsi update del control plane Payload.
+2. Wrapper legacy `update-enrollment-fields` e `update-expire-date` rimossi.
+
+### Onda 2
+
+1. Introdurre `data-quality-flow` in Payload.
+2. Spostare i trigger admin su flow, non su primitive endpoint.
+3. Usare primitive solo per support/debug.
+
+### Onda 3
+
+1. Eseguire deprecazione guidata dei legacy endpoint update.
+2. Chiudere i consumer residui (script o dashboard).
+3. Congelare il perimetro entrypoint pubblici a:
+  - acquisition-flow
+  - update-flow
+  - data-quality-flow
+
+## Criteri go/no-go per ogni ondata
+
+1. Tutti i test endpoint e webhook verdi.
+2. Nessun aumento error rate nei workflow Payload.
+3. Dry-run e apply verificati su almeno un'universita' campione.
+4. Rollback semplice: wrapper legacy ancora disponibili fino a fine Onda 3.
+
+## Stato implementazione (22-04-2026)
+
+Sono stati implementati i seguenti componenti nel control plane Payload:
+
+- Client centralizzato Edge Functions:
+  - `laureasi-admin/src/lib/edgeFunctions/client.ts`
+- Orchestratori flow:
+  - `laureasi-admin/src/lib/workflows/edgeWorkflows.ts`
+- API route per avvio flow:
+  - `POST /api/workflows/acquisition`
+  - `POST /api/workflows/update`
+  - File:
+    - `laureasi-admin/src/app/api/workflows/acquisition/route.ts`
+    - `laureasi-admin/src/app/api/workflows/update/route.ts`
+- Task Payload registrati:
+  - `runAcquisitionFlow`
+  - `runUpdateFlow`
+  - File:
+    - `laureasi-admin/src/tasks/runAcquisitionFlow/index.ts`
+    - `laureasi-admin/src/tasks/runUpdateFlow/index.ts`
+
+Inoltre, i task preesistenti sono stati riallineati al contratto snake_case:
+
+- `discoverSources` -> `university_id`
+- `scrapeBatch` -> `university_id`, `entity_type`, `only_new`
+
+## Delta applicato (23-04-2026)
+
+### Onda 1 - avviata
+
+1. `runUpdateFlow` ora usa `refresh-fields` come step principale per il refresh campi.
+2. La route `POST /api/workflows/update` accetta i nuovi parametri:
+  - `refresh_profile`
+  - `only_missing`
+  - `run_refresh_fields`
+3. Il task Payload `runUpdateFlow` espone i nuovi controlli in `inputSchema`.
+
+### Onda 2 - avviata
+
+1. Introdotta nuova route control plane:
+  - `POST /api/workflows/data-quality`
+2. Introdotto orchestratore `runDataQualityFlow` con step:
+  - `check-data-sources-integrity`
+  - `reconcile-data-sources` (dry run)
+  - `reconcile-data-sources` apply opzionale
+  - `cleanup-entities` opzionale
+3. Widget dashboard aggiornato con trigger `Avvia data quality`.
+4. Widget dashboard esteso con controlli operativi data quality:
+  - `apply_reconcile`
+  - `run_cleanup`
+  - `cleanup_dry_run`
+  - filtro `entity_type` dedicato al flow data quality
+5. Creato task Payload dedicato:
+  - `runDataQualityFlow`
+
+### Migrazione DB necessaria
+
+Per persistere i run con nuovo flow `data_quality` e' stata aggiunta la migrazione:
+
+- `20260423_101500_add_data_quality_flow_to_edge_runs`
+
+Applicare le migrazioni prima dell'uso in ambienti condivisi.
+
+## Come usarli subito
+
+Esempio acquisizione:
+
+```bash
+curl -X POST "${PAYLOAD_PUBLIC_SERVER_URL}/api/workflows/acquisition" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "university_id": 12,
+    "entity_type": "master",
+    "validate_urls": true,
+    "ai_filter": true,
+    "run_normalization": true,
+    "run_assign_areas": true
+  }'
+```
+
+Esempio aggiornamento:
+
+```bash
+curl -X POST "${PAYLOAD_PUBLIC_SERVER_URL}/api/workflows/update" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "university_id": 12,
+    "entity_type": "corso",
+    "fields": ["enrollment_status", "academic_year"],
+    "run_normalization": true,
+    "run_cleanup": true,
+    "cleanup_dry_run": true
+  }'
+```

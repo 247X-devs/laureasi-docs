@@ -1,0 +1,33 @@
+---
+title: Assign Areas To Entities
+description: Documentazione edge function assign-areas-to-entities.
+---
+
+# assign-areas-to-entities
+
+Assegna automaticamente l'area (campo `area_id`) a lauree, master o corsi usando classificazione AI.
+
+## Endpoint
+
+`POST /functions/v1/assign-areas-to-entities`
+
+## Parametri (JSON body)
+
+- `entity_type` (string, obbligatorio): `laurea` | `master` | `corso`
+- `university_id` (number, opzionale): limita l'operazione a una universita'
+- `overwrite` (boolean, opzionale, default `false`): se `true`, sovrascrive anche aree gia' valorizzate
+- `limit` (number, opzionale): massimo record da processare
+- `entity_ids` (number[], opzionale): lista esplicita di ID da classificare
+
+Compatibilita': sono ancora accettati i parametri legacy in camelCase (`entityType`, `universityId`, `entityIds`) con warning in `meta.warnings`.
+
+## Casi d'uso
+
+- Riallineare la classificazione aree dopo ingest massivo.
+- Popolare `area_id` per nuove entita' senza area.
+- Ricalcolare aree per uno specifico set di record.
+
+## Risposta
+
+- Successo: `success: true`, payload in `data`, warning in `meta.warnings`.
+- Errore: `success: false`, dettagli in `error.code`, `error.message`, `error.details`.

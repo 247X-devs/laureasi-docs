@@ -1,0 +1,66 @@
+---
+title: Scrape Batch
+description: Documentazione edge function scrape-batch.
+---
+
+# scrape-batch
+
+Avvia un batch Firecrawl sulle data source attive in base ai filtri richiesti.
+
+## Endpoint
+
+`POST /functions/v1/scrape-batch`
+
+## Parametri (JSON body)
+
+- `university_id` (number, opzionale): universita' target
+- `source_id` (number, opzionale): ID di una data source specifica da processare
+- `entity_type` (string, opzionale): `laurea` | `master` | `corso` | `sedi` | `tax_break`
+- `entity_id` (number, opzionale): ID entita' specifica (solo per `laurea`, `master`, `corso`)
+- `limit` (number, opzionale): massimo data source da includere
+- `only_new` (boolean, opzionale, default `false`): include solo source non collegate a entita' esistenti
+
+Vincolo: devi passare almeno uno tra `university_id` e `source_id`.
+
+Compatibilita': supporta anche camelCase (`universityId`, `sourceId`, `entityType`, `entityId`, `onlyNew`) con warning in `meta.warnings`.
+
+## Esempio chiamata
+
+```bash
+curl -X POST "https://<PROJECT_REF>.supabase.co/functions/v1/scrape-batch" \
+  -H "Authorization: Bearer <SUPABASE_SERVICE_ROLE_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "university_id": 12,
+    "entity_type": "master",
+    "limit": 20,
+    "only_new": true
+  }'
+```
+
+Esempio singola data source:
+
+```bash
+curl -X POST "https://<PROJECT_REF>.supabase.co/functions/v1/scrape-batch" \
+  -H "Authorization: Bearer <SUPABASE_SERVICE_ROLE_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source_id": 12345,
+    "limit": 1
+  }'
+```
+
+## Cosa fa
+
+1. Carica data source attive e coerenti con i filtri.
+2. Esclude source senza schema valido.
+3. Avvia `firecrawlStartBatchScrape` con metadata uniforme.
+4. Restituisce `batch_id` e `source_ids` processati.
+
+## Cosa ritorna
+
+Oggetto JSON standard con:
+
+- `success`
+- `data.batch_id`, `data.source_ids`, `data.total_sources`
+- `meta.warnings` in caso di parametri legacy

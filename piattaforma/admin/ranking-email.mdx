@@ -1,0 +1,131 @@
+---
+title: Ranking Email API
+description: Ranking Email API — documentazione tecnica Laureasi.
+---
+
+# Funzione per inviare risultati di orientamento via email
+
+## Uso
+
+```typescript
+import { sendRankingResultsEmail } from "@/services/email";
+
+await sendRankingResultsEmail({
+  to: "user@example.com",
+  results: [
+    {
+      title: "Laurea in Informatica",
+      courseType: "Laurea Magistrale",
+      university: "Università di Milano",
+      score: 0.95,
+      reason: "Perfetto match con il tuo profilo e i tuoi obiettivi",
+      url: "https://laureasi.it/universita/milano/informatica",
+      priceLabel: "€ 2.000-3.000/anno",
+    },
+    // ... altri risultati
+  ],
+  quiz: {
+    obiettivo: "Specializzarmi in Intelligenza Artificiale",
+    areaInteresse: "Informatica",
+    livello: "Laurea Magistrale",
+    situazione: "Lavoro a tempo pieno",
+    tempo: "Part-time",
+  },
+});
+```
+
+## Struttura dei dati
+
+### `RankingResult`
+
+```typescript
+interface RankingResult {
+  title: string; // Nome della laurea/master
+  courseType?: string; // Es: "Laurea Magistrale", "Master"
+  university: string; // Nome ateneo
+  score: number; // Score da 0 a 1
+  reason: string; // Motivo della raccomandazione
+  url: string; // Link al corso
+  priceLabel?: string; // Es: "€ 1.000-2.000/anno"
+}
+```
+
+### `OrientationQuiz`
+
+```typescript
+interface OrientationQuiz {
+  obiettivo: string; // Obiettivo di studi
+  areaInteresse: string; // Area di interesse
+  livello: string; // Livello di studio
+  situazione?: string; // Situazione (es: "Studente", "Lavoratore")
+  tempo?: string; // Tempo disponibile (es: "Part-time", "Full-time")
+}
+```
+
+## Integrazione con l'endpoint `/api/trova-laurea/recommend`
+
+Dopo aver ottenuto i risultati, puoi inviare l'email così:
+
+```typescript
+// In route.ts di /api/trova-laurea/recommend
+import { sendRankingResultsEmail } from "@/services/email";
+
+export async function POST(request: Request) {
+  // ... logica di ranking ...
+
+  const results = topCandidates.map((c) => ({
+    title: c.title,
+    courseType: c.courseType,
+    university: c.university,
+    score: c.score,
+    reason: c.reason,
+    url: c.url,
+    priceLabel: c.priceLabel,
+  }));
+
+  // Invia email se l'utente ha fornito email
+  if (body.userEmail) {
+    await sendRankingResultsEmail({
+      to: body.userEmail,
+      results,
+      quiz: body,
+    });
+  }
+
+  return NextResponse.json({ success: true, data: { results } });
+}
+```
+
+## Email in HTML
+
+L'email include:
+
+- ✅ Header con logo branding
+- ✅ Riepilogo profilo dell'utente (obiettivo, area, livello, etc)
+- ✅ Risultati ordinati con score e motivi
+- ✅ Prezzo (se disponibile)
+- ✅ Link diretto al corso
+- ✅ Design responsive per mobile
+
+## Gestione errori
+
+Se l'invio fallisce, la funzione:
+
+- 📧 Lancia un errore (catch con try/catch)
+- 🔍 Loga l'errore con prefisso `[Ranking Email]`
+- ❌ NON blocca il flusso dell'API (chiama la funzione in background)
+
+```typescript
+// Esempio: invia ma non bloccare se fallisce
+sendRankingResultsEmail({ ... }).catch(error => {
+  console.error('Ranking email failed:', error)
+  // Opzionale: notifica admin
+})
+```
+
+## Note
+
+- 🌍 Provider automatico: Mailpit (local), Resend (dev/prod)
+- 📱 HTML stilizzato inline, compatibile con tutti i client email
+- 🎨 Tema coerente con il design di Laureasi
+- 🔗 Link tracciabili verso i corsi

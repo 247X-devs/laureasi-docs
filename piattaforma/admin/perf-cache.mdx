@@ -1,0 +1,35 @@
+---
+title: Performance cache rollout
+description: Performance cache rollout — documentazione tecnica Laureasi.
+---
+
+# Performance cache rollout
+
+## Phase 4 — Redis / KV gate (not implemented by default)
+
+Runtime Cache on Vercel is the primary shared cache layer. Introduce
+`@vercel/kv` or Upstash Redis only when **all** of the following are true
+after Phases 1–3 are deployed:
+
+1. Vercel Observability → Runtime Cache hit rate stays **below 60%** for 48h
+2. p95 for `/api/catalog/*` and quiz recommend remains above target with elevated DB CPU
+3. Tuning TTL/tags and `expireTag` hooks did not improve hit rate
+
+Document the decision in the PR before adding KV.
+
+## Feature flags
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `LAUREASI_USE_CATALOG_STATS_API` | `false` (frontend) | CategoryPage uses `/api/catalog/category-stats` |
+| `LAUREASI_RUNTIME_CACHE_ENABLED` | `true` (admin) | Disable to force in-process fallback |
+| `LAUREASI_USE_CATALOG_STATS_SQL` | `true` (admin) | Set `false` to force Payload pagination fallback |
+
+## Baseline fixtures
+
+Contract tests live in:
+
+- `src/__tests__/categoryStatsLogic.test.ts`
+- `src/__tests__/getOrSet.test.ts`
+
+Frontend regression fixtures: `src/lib/catalog/__fixtures__/baseline-routes.json`

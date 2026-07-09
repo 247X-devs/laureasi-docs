@@ -1,0 +1,82 @@
+---
+title: Reconcile Data Sources
+description: Documentazione edge function reconcile-data-sources.
+---
+
+# reconcile-data-sources
+
+Riconcilia le `data_sources` non collegate (`related_* = null`) con entita' esistenti (`degrees`, `masters`, `courses`) usando regole deterministiche e un punteggio di confidenza.
+
+## Endpoint
+
+`POST /functions/v1/reconcile-data-sources`
+
+## Parametri (JSON body)
+
+- `dry_run` (boolean, opzionale, default `true`): se `false`, applica i link automatici.
+- `entity_type` (string, opzionale): `laurea` | `master` | `corso`.
+- `source_id` (number, opzionale): riconcilia una sola data source.
+- `university_id` (number, opzionale): filtra per universita'.
+- `only_active` (boolean, opzionale, default `true`): considera solo data source attive.
+- `limit` (number, opzionale, default `500`): batch size.
+- `offset` (number, opzionale, default `0`): offset batch.
+- `auto_link_threshold` (number, opzionale, default `0.9`): soglia per collegamento automatico.
+- `review_threshold` (number, opzionale, default `0.7`): soglia minima per finire in review.
+
+Compatibilita': supporto legacy `camelCase` con warning in `meta.warnings`.
+
+## Regole di matching
+
+1. Match forte: `entry_url` uguale a una data source gia' collegata.
+2. Match forte: slug finale URL uguale allo slug entita'.
+3. Match testuale: similarita' token su slug/titolo.
+4. Sotto soglia: `unmatched_for_scrape` (candidata a nuovo scrape).
+
+## Risposta
+
+- `data.totals`: contatori principali.
+- `data.by_entity_type`: breakdown per `laurea/master/corso`.
+- `data.auto_linked`: righe con confidenza >= soglia automatica.
+- `data.review_needed`: candidati con confidenza media.
+- `data.unmatched_for_scrape`: candidati senza match affidabile.
+- `data.apply_errors`: eventuali errori in fase di update quando `dry_run=false`.
+
+## Note operative
+
+- La funzione applica link automatici solo per `decision=auto_link`.
+- I casi `review_needed` non vengono aggiornati automaticamente.
+- I casi `unmatched_for_scrape` sono candidati a nuovo scrape mirato.
+- Eseguire sempre a batch con `limit` + `offset` (es. 0, 500, 1000, ...).
+
+## Strategia di esecuzione
+
+1. `dry_run=true` su tutti i batch.
+2. Revisione dei casi `review_needed`.
+3. `dry_run=false` per applicare gli `auto_linked`.
+4. Nuovo giro di check di integrita' dal control plane Payload per validare il delta.
+
+## Esempi
+
+Dry run completo:
+
+```bash
+curl -X POST "https://<PROJECT_REF>.supabase.co/functions/v1/reconcile-data-sources" \
+  -H "Content-Type: application/json" \
+  -d '{"dry_run": true}'
+```
+
+Applica solo sui master di una universita':
+
+```bash
+curl -X POST "https://<PROJECT_REF>.supabase.co/functions/v1/reconcile-data-sources" \
+  -H "Content-Type: application/json" \
+  -d '{"dry_run": false, "entity_type": "master", "university_id": 1}'
+```
+
+Dry run batch successivo:
+
+```bash
+curl -X POST "https://<PROJECT_REF>.supabase.co/functions/v1/reconcile-data-sources" \
+  -H "Content-Type: application/json" \
+  -d '{"dry_run": true, "limit": 500, "offset": 500}'
+```
