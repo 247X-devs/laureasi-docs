@@ -1,0 +1,59 @@
+---
+title: Gestire le FAQ
+description: Come aggiungere, eliminare e ordinare domande frequenti.
+---
+
+Le FAQ sono organizzate in **Gruppi FAQ**, ciascuno con un insieme di domande e risposte.
+
+## Dove trovarle
+
+Menu laterale → **📝 Contenuti** → **Gruppi FAQ**
+
+<Frame caption="Gruppi FAQ con drag-and-drop">
+  <img src="/images/admin/faq-gruppi.png" alt="Gruppi FAQ con domande ordinabili" />
+</Frame>
+
+## Creare un gruppo
+
+<Steps>
+  <Step title="Crea nuovo gruppo">
+    Clicca **Crea nuovo** in Gruppi FAQ.
+  </Step>
+  <Step title="Dati gruppo">
+    - **Nome del gruppo** — titolo categoria (es. "Università telematiche")
+    - **Slug** — identificatore univoco (non modificare dopo la creazione)
+    - **Ordine** — posizione tra i gruppi (numero più basso = prima)
+    - **Pubblicato** — rende visibile il gruppo sul sito
+  </Step>
+  <Step title="Aggiungi domande">
+    Nella sezione **Domande e risposte** clicca **Aggiungi riga** per ogni FAQ.
+  </Step>
+  <Step title="Salva">
+    Verifica la resa nella pagina FAQ del sito.
+  </Step>
+</Steps>
+
+## Ordinare le domande
+
+1. Apri il gruppo FAQ
+2. Nella lista **Domande e risposte**, trascina le righe usando l'handle **⠿** a sinistra
+3. Salva
+
+## Eliminare una FAQ
+
+- **Singola domanda:** rimuovi la riga nell'array domande/risposte
+- **Intero gruppo:** elimina il record del gruppo (attenzione: rimuove tutte le FAQ del gruppo)
+
+<Warning>
+Prima di eliminare un gruppo intero, verifica che non sia referenziato da link esterni sul sito.
+</Warning>
+
+## Modificare una FAQ esistente
+
+1. Apri il gruppo
+2. Modifica testo di **Domanda** o **Risposta** (editor rich text)
+3. Salva
+
+## Guide correlate
+
+- [Ruoli utente](/admin/ruoli)

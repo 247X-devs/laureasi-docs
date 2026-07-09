@@ -1,0 +1,40 @@
+---
+title: Tracking (UTM)
+description: Come leggere i parametri UTM e la provenienza dei lead.
+---
+
+Il **tracking** permette di capire da quale campagna o canale proviene un lead.
+
+## Dove si vedono i dati
+
+Apri un lead in **👥 Utenti & CRM → Leads** e scorri i campi:
+
+| Campo | Esempio | Significato |
+| --- | --- | --- |
+| **Fonte** | Sito Web, Google Ads, Landing Page | Canale aggregato |
+| **UTM Source** | `google`, `facebook` | Sorgente della campagna |
+| **UTM Medium** | `cpc`, `email`, `social` | Tipo di traffico |
+| **UTM Campaign** | `spring_2026` | Nome campagna |
+
+<Frame caption="Campi UTM in un lead">
+  <img src="/images/admin/tracking-utm.png" alt="Campi UTM Source, Medium e Campaign in un lead" />
+</Frame>
+
+## Come arrivano i parametri
+
+I parametri UTM vengono catturati automaticamente quando l'utente compila un form o il quiz partendo da un link con query string, ad esempio:
+
+```
+https://laureasi.it/trova-laurea?utm_source=google&utm_medium=cpc&utm_campaign=orientamento_2026
+```
+
+## Buone pratiche
+
+- Usa nomi di campagna coerenti e leggibili
+- Non modificare manualmente gli UTM se non sai la provenienza reale
+- Incrocia **Fonte** + UTM per report marketing
+
+## Guide correlate
+
+- [Consultare i Leads](/admin/leads)
+- [Metadati nei Leads](/admin/leads-metadati)

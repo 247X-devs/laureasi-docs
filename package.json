@@ -7,5 +7,8 @@
     "dev": "mintlify dev",
     "sync-changelog": "node scripts/sync-changelog.mjs",
     "deploy": "node scripts/trigger-mintlify-deploy.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
   }
 }

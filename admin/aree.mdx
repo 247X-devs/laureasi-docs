@@ -1,0 +1,42 @@
+---
+title: Guida alle Aree Tematiche
+description: Come creare e gestire le aree di studio nel pannello admin.
+---
+
+Le **Aree Tematiche** raggruppano i percorsi per macro-settore (es. Economia, Informatica, Sanità).
+
+## Dove trovarle
+
+Menu laterale → **📝 Contenuti** → **Aree Tematiche**
+
+<Frame caption="Lista aree tematiche">
+  <img src="/images/admin/aree-lista.png" alt="Lista delle aree tematiche nel pannello admin" />
+</Frame>
+
+## Creare un'area
+
+<Steps>
+  <Step title="Crea nuovo">
+    Clicca **Crea nuovo** nella lista aree.
+  </Step>
+  <Step title="Compila i campi">
+    - **Titolo** — nome dell'area mostrato sul sito
+    - **Slug** — parte dell'URL (es. `informatica`)
+    - **Descrizione** — testo introduttivo
+    - **Immagine rappresentativa** — icona o foto dell'area
+    - **Macro area** — categoria di appartenenza (se prevista)
+    - **In evidenza** — per mostrarla in homepage
+  </Step>
+  <Step title="Salva">
+    L'area sarà raggiungibile su `/area/[slug]` sul sito pubblico.
+  </Step>
+</Steps>
+
+## Collegamento ai percorsi
+
+I corsi, lauree e master possono essere associati a una o più aree. Questo alimenta filtri, navigazione e il quiz di orientamento.
+
+## Guide correlate
+
+- [In evidenza in homepage](/admin/in-evidenza)
+- [Aggiornare percorsi](/admin/percorsi)

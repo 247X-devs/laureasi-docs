@@ -1,0 +1,54 @@
+---
+title: Webhook verso n8n
+description: Come configurare l'invio automatico dei lead a n8n tramite webhook.
+---
+
+Quando viene creato un **lead** o completato il quiz **Trova Laurea**, il sistema può chiamare un webhook esterno (es. workflow **n8n**).
+
+## Dove configurarlo
+
+Menu laterale → **⚙️ Configurazione** → **Integrazioni Lead**
+
+<Frame caption="Impostazioni webhook">
+  <img src="/images/admin/webhook-n8n.png" alt="Schermata Integrazioni Lead con webhook URL" />
+</Frame>
+
+<Note>
+Solo gli utenti con ruolo **Admin** possono modificare queste impostazioni.
+</Note>
+
+## Campi di configurazione
+
+| Campo | Descrizione |
+| --- | --- |
+| **Webhook abilitato** | Attiva/disattiva l'invio |
+| **Webhook URL** | Endpoint HTTPS del workflow n8n (es. `https://n8n.example.com/webhook/...`) |
+| **Webhook secret** | Chiave condivisa per firma HMAC del payload |
+| **Timeout richiesta** | Tempo massimo per ogni tentativo (ms) |
+| **Tentativi aggiuntivi** | Retry in caso di errore |
+
+## Setup in n8n (panoramica)
+
+<Steps>
+  <Step title="Crea workflow">
+    Aggiungi un nodo **Webhook** come trigger in n8n.
+  </Step>
+  <Step title="Copia URL">
+    Usa l'URL di produzione del webhook e incollalo in **Webhook URL** nel pannello.
+  </Step>
+  <Step title="Configura secret">
+    Imposta lo stesso secret in n8n e nel campo **Webhook secret** per validare le richieste.
+  </Step>
+  <Step title="Test">
+    Invia un lead di prova dal sito e verifica che il workflow n8n riceva il payload.
+  </Step>
+</Steps>
+
+## Cosa viene inviato
+
+Il payload include i dati del lead (nome, email, telefono, fonte, UTM, metadati) e, per il quiz, le informazioni collegate al risultato.
+
+## Guide correlate
+
+- [Consultare i Leads](/admin/leads)
+- [Metadati nei Leads](/admin/leads-metadati)

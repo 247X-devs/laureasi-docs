@@ -1,0 +1,53 @@
+---
+title: Impostare le Agevolazioni
+description: Come creare e gestire agevolazioni fiscali e convenzioni nel pannello admin.
+---
+
+Le **agevolazioni** (Tax Breaks) descrivono sconti, convenzioni, borse e agevolazioni per categorie di studenti (es. Forze Armate, PA, DSA).
+
+## Dove trovarle
+
+Nel menu laterale cerca la sezione dedicata alle **Agevolazioni** (collection Tax Breaks).
+
+<Frame caption="Lista agevolazioni">
+  <img src="/images/admin/agevolazioni-lista.png" alt="Lista agevolazioni nel pannello admin" />
+</Frame>
+
+## Creare una nuova agevolazione
+
+<Steps>
+  <Step title="Crea nuovo record">
+    Clicca **Crea nuovo** nella lista agevolazioni.
+  </Step>
+  <Step title="Dati base">
+    Compila **Titolo**, verifica lo **Slug** e imposta **Attiva** su sì se deve essere visibile.
+  </Step>
+  <Step title="Tipo e ambito">
+    Scegli il **Tipo di agevolazione** (prezzo fisso, percentuale, convenzione, borsa, ecc.) e l'**Ambito** (università intera, tipologia corso, percorso specifico, categoria destinatari).
+  </Step>
+  <Step title="Target">
+    Seleziona università, tipologia percorso o percorsi specifici a seconda dell'ambito scelto.
+  </Step>
+  <Step title="Validità e importi">
+    Imposta date di validità e i valori economici (prezzo originale, agevolato, riduzione % o €).
+  </Step>
+  <Step title="Salva">
+    Controlla l'anteprima sul sito nella pagina agevolazioni dell'ateneo interessato.
+  </Step>
+</Steps>
+
+## Priorità e cumulabilità
+
+| Campo | Significato |
+| --- | --- |
+| Priorità | Se più agevolazioni si sovrappongono, quella con priorità più alta prevale |
+| Cumulabile | Se può sommarsi ad altre agevolazioni (raro — verifica con il team) |
+
+## Collegamento al quiz di orientamento
+
+Le agevolazioni selezionate dall'utente nel quiz possono influenzare il ranking. Vedi [Algoritmo di orientamento](/algoritmi/orientamento).
+
+## Guide correlate
+
+- [Università](/admin/universita)
+- [Sorgenti dati](/admin/sorgenti-dati)

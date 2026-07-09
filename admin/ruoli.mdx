@@ -1,0 +1,49 @@
+---
+title: Guida ai Ruoli Utente
+description: Cosa può fare ogni ruolo nel pannello admin Laureasi.
+---
+
+Ogni utente ha un **ruolo** che definisce cosa può vedere e modificare.
+
+<Frame caption="Selezione ruolo utente">
+  <img src="/images/admin/utenti-ruolo.png" alt="Campo Ruolo nella scheda utente" />
+</Frame>
+
+## Ruoli disponibili
+
+| Ruolo | Chi è | Permessi principali |
+| --- | --- | --- |
+| **Admin** | Responsabile piattaforma | Accesso completo: utenti, lead, configurazione, sorgenti dati, webhook |
+| **Moderatore** | Content manager senior | Lauree, master, corsi, università, aree |
+| **Editor** | Redattore | Contenuti editoriali: blog, FAQ, aree |
+| **Autore** | Blogger | Solo articoli del blog |
+
+## Matrice semplificata
+
+| Area | Admin | Moderatore | Editor | Autore |
+| --- | --- | --- | --- | --- |
+| Leads | ✅ | ❌ | ❌ | ❌ |
+| Utenti | ✅ | ❌ | ❌ | ❌ |
+| Webhook / integrazioni | ✅ | ❌ | ❌ | ❌ |
+| Lauree / Master / Corsi | ✅ | ✅ | ❌ | ❌ |
+| Università | ✅ | ✅ | ❌ | ❌ |
+| Blog | ✅ | ✅ | ✅ | ✅ |
+| FAQ | ✅ | ✅ | ✅ | ❌ |
+| Aree tematiche | ✅ | ✅ | ✅ | ❌ |
+| Sorgenti dati | ✅ | ❌ | ❌ | ❌ |
+| Sconti e campagne | ✅ | ✅* | ❌ | ❌ |
+
+\* Verifica con il team se i moderatori gestiscono anche gli sconti nella tua organizzazione.
+
+## Quale ruolo assegnare?
+
+| Esigenza | Ruolo consigliato |
+| --- | --- |
+| Nuovo redattore blog | Autore |
+| Gestione FAQ e aree | Editor |
+| Gestione catalogo corsi | Moderatore |
+| IT / operations | Admin |
+
+## Guide correlate
+
+- [Aggiungere un utente](/admin/utenti)

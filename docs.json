@@ -20,7 +20,25 @@
           },
           {
             "group": "Pannello Admin",
-            "pages": ["admin/index", "admin/sconti-e-campagne"]
+            "pages": [
+              "admin/index",
+              "admin/leads",
+              "admin/leads-metadati",
+              "admin/tracking",
+              "admin/webhook-n8n",
+              "admin/percorsi",
+              "admin/universita",
+              "admin/agevolazioni",
+              "admin/sconti-e-campagne",
+              "admin/in-evidenza",
+              "admin/aree",
+              "admin/recensioni",
+              "admin/blog",
+              "admin/faq",
+              "admin/utenti",
+              "admin/ruoli",
+              "admin/sorgenti-dati"
+            ]
           },
           {
             "group": "Algoritmi",

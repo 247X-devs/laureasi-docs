@@ -1,0 +1,43 @@
+---
+title: Metadati nei Leads
+description: Come leggere e interpretare il campo Metadati JSON nei lead.
+---
+
+Il campo **Metadati** contiene informazioni tecniche catturate automaticamente al momento della compilazione del form o del quiz.
+
+<Frame caption="Campo Metadati in un lead">
+  <img src="/images/admin/leads-metadati.png" alt="Campo Metadati JSON nella scheda di un lead" />
+</Frame>
+
+## Dove trovarlo
+
+1. Apri **👥 Utenti & CRM → Leads**
+2. Clicca su un lead
+3. Scorri fino al campo **Metadati** (formato JSON)
+
+## Cosa può contenere
+
+Esempi tipici (variano in base al form):
+
+| Chiave | Significato |
+| --- | --- |
+| `page_url` / `referrer` | Pagina da cui è partita la richiesta |
+| `user_agent` | Browser e dispositivo |
+| `ip` | Indirizzo IP (se raccolto) |
+| `cookie_consent` | Stato consenso cookie |
+| Dati quiz | Risposte o contesto del test di orientamento |
+
+## Come usarlo
+
+- **Supporto commerciale:** capire da quale pagina o flusso è arrivato il contatto
+- **Debug:** verificare se un lead proviene dal quiz o da un form specifico
+- **Non modificare** il JSON manualmente salvo indicazione del team tecnico
+
+<Warning>
+I metadati possono contenere dati sensibili. Non condividere screenshot con informazioni reali nella documentazione pubblica.
+</Warning>
+
+## Guide correlate
+
+- [Consultare i Leads](/admin/leads)
+- [Tracking UTM](/admin/tracking)
