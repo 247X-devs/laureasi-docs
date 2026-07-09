@@ -4,9 +4,14 @@
   "description": "Documentazione ufficiale Laureasi — guide admin, algoritmi, piattaforma e changelog.",
   "theme": "mint",
   "colors": {
-    "primary": "#7C3AED",
-    "light": "#EDE9FE",
-    "dark": "#5B21B6"
+    "primary": "#A6192E",
+    "light": "#F6D1D7",
+    "dark": "#3A332E"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://laureasi.it"
   },
   "favicon": "/favicon.svg",
   "navigation": {
