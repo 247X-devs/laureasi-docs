@@ -33,7 +33,7 @@ flowchart LR
     Q -->|"Ore/settimana"| C4["Carico sostenibile\nfino a +22 / -20"]
     Q -->|"Situazione lavoro"| C5["Flessibilità\nfino a +12"]
     Q -->|"Obiettivo"| C6["Tipo percorso\nfino a +25 / -5"]
-    Q -->|"Ruolo desiderato"| C7["Match parole chiave\n+18 / +8"]
+    Q -->|"Ruolo professionale"| C7["Match parole chiave\n+25 / +14 / −12"]
     Q -->|"Agevolazioni"| C8["Convenzioni ateneo\n+10 / 0"]
     Q -.->|"Ateneo partner"| C9["is_partner CMS\n+8 / +14"]
     Q -.->|"Priorità ateneo"| C10["Pegaso / San Raffaele / Mercatorum\nfino a +18"]
@@ -49,10 +49,12 @@ flowchart LR
 | 3 | Tempo disponibile | Domanda 6 | -20 → +22 | Corsi brevi vs lauree |
 | 4 | Situazione lavorativa | Domanda 5 | 0 → +12 | Full-time, genitore, part-time |
 | 5 | Obiettivo | Domanda 1 | -5 → +25 | Concorso, completare percorso, crescita |
-| 6 | Ruolo desiderato | Domanda 2 | 0 → +18 | Parole chiave nel titolo |
+| 6 | Ruolo professionale | Domanda 2 | 0 → +25 / +14 / −12 | Select professioni + Altro; sinonimi/alias sul catalogo |
 | 7 | Agevolazioni | Passo 8 | 0 → +10 | Convenzioni ateneo compatibili |
 | 8 | Ateneo Partner | CMS `is_partner` | 0 → +14 | **Leva principale** per prioritizzare atenei |
 | 9 | Priorità ateneo | ID università CMS | 0 → +18 | Pegaso +18, San Raffaele/Mercatorum +10 |
+
+Per **crescita professionale** e **cambio carriera**, il ruolo si sceglie da una lista fissa (con campo **Altro** a testo libero). Il frontend invia un `matchText` arricchito; il ranking espande token con alias e sinonimi di dominio (`ROLE_TOKEN_ALIASES`, `ROLE_DOMAIN_SYNONYMS`) contro titolo, area e piano di studi.
 
 ## Come intervenire sui risultati
 
