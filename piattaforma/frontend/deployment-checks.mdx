@@ -20,14 +20,26 @@ Il progetto deploya tramite **GitHub Actions + Vercel CLI** (`vercel build` → 
 
 ## Check GitHub da richiedere
 
-I nomi corrispondono al campo `name:` dei job nei workflow:
+I nomi corrispondono ai job del workflow **Deploy Preview** / **Deploy Production** (non esiste più un workflow `CI` standalone: `ci.yml` è solo `workflow_call`).
 
-| Ambiente | Job consigliati |
-|----------|------------------|
+| Ambiente | Job consigliati (branch protection / Vercel checks) |
+|----------|------------------------------------------------------|
 | Production | `Lint · Typecheck · Test`, `Build smoke · Script tests`, `Build & Deploy Production`, `E2E smoke` |
 | Preview | `Lint · Typecheck · Test`, `Build smoke · Script tests`, `Build & Deploy Preview`, `E2E smoke` |
 
+In GitHub possono comparire come `Deploy Preview / Lint · Typecheck · Test / …` — usate i check del workflow di deploy, **non** un eventuale vecchio check `CI / …`.
+
 > **Nota:** Lighthouse CI ha `continue-on-error: true` — non usarlo come check bloccante finché non è stabilizzato.
+
+### Trigger (anti-duplicati)
+
+| Workflow | Quando parte |
+|----------|----------------|
+| `Deploy Preview` | PR verso `develop`/`main`, oppure push su `develop` |
+| `Deploy Production` | push su `main` |
+| `CI` (reusable) | solo chiamato dai deploy (o `workflow_dispatch` manuale) |
+
+Push su `develop` e PR `develop → main` condividono la concurrency `deploy-preview-develop`: resta una sola run effettiva.
 
 ## E2E smoke (Playwright)
 
@@ -84,28 +96,31 @@ Se i check non compaiono:
 
 Settings → Branches → Add rule:
 
-- Require status checks before merging:
+- Require status checks before merging (dal workflow **Deploy Preview** sulla PR):
   - `Lint · Typecheck · Test`
   - `Build smoke · Script tests`
   - `E2E smoke` (dopo il primo deploy con la suite attiva)
+- Rimuovere eventuali check legacy `CI / …` (il workflow standalone non parte più).
 - Require branches to be up to date before merging.
 
 ### Branch `develop` (preview stabile)
 
-- Require `Lint · Typecheck · Test`
-- Require `Build smoke · Script tests`
-- Require `E2E smoke` (dopo il primo deploy con la suite attiva)
+- Require gli stessi check da **Deploy Preview**
+- Rimuovere check legacy `CI / …`
 
 ## Gate già attivi in CI/CD
 
 ```text
-PR / push
-  → ci.yml: lint, typecheck, vitest
+PR → develop/main  (o push → develop)
+  → Deploy Preview chiama ci.yml: lint, typecheck, vitest
   → build-smoke: yarn build, test:scripts, test:env
   → deploy: vercel build (build:seo + PRERENDER_STRICT)
   → verify:prerender (report + file campione)
   → vercel deploy --prebuilt
-  → e2e-smoke: Playwright su develop.laureasi.it / laureasi.it
+  → e2e-smoke: Playwright su preview URL / develop.laureasi.it
+
+push → main
+  → Deploy Production chiama ci.yml (+ stesso pipeline prod)
 ```
 
 Variabili prerender in deploy:
