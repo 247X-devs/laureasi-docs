@@ -36,7 +36,7 @@ Dopo ogni deploy, il job **`E2E smoke`** esegue 6 test browser contro il dominio
 | Ambiente | `E2E_BASE_URL` |
 |----------|----------------|
 | Preview / develop | `https://develop.laureasi.it` |
-| Production | `https://laureasi.it` |
+| Production | `https://www.laureasi.it` |
 
 Copertura v1 (nessun submit di form reali):
 
@@ -120,7 +120,7 @@ Variabili prerender in deploy:
 ## Verifica manuale post-deploy
 
 ```bash
-curl -s https://laureasi.it/percorsi | grep -E '<title>|aria-busy'
+curl -s https://www.laureasi.it/percorsi | grep -E '<title>|aria-busy'
 ```
 
 Atteso: `<title>` presente, nessun `aria-busy="true"` come unico contenuto del root.
