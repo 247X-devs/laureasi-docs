@@ -58,7 +58,12 @@ Utile per eccezioni (es. un master escluso da una convenzione dell'ateneo). Dett
 
 ## Collegamento al quiz di orientamento
 
-Le agevolazioni selezionate dall'utente nel quiz possono influenzare il ranking. Vedi [Algoritmo di orientamento](/algoritmi/orientamento).
+Le agevolazioni selezionate dall'utente nel quiz:
+
+1. influenzano il ranking (+10 se l’ateneo ha un TaxBreak con `audience` compatibile);
+2. personalizzano il **prezzo mostrato** nei risultati: si applica la retta agevolata del TaxBreak matchato, con indicatore UI della fascia (pill “Agevolazione”) e retta standard barrata.
+
+Le label del quiz devono allinearsi al testo in `audience` sul TaxBreak (es. DSA, Forze Armate, Pubblica Amministrazione). Vedi [Algoritmo di orientamento](/algoritmi/orientamento).
 
 ## Guide correlate
 
