@@ -58,6 +58,8 @@ Per **crescita professionale** e **cambio carriera**, il ruolo si sceglie da una
 
 **Nutrizione ≠ Gastronomia:** nel quiz l’area **Nutrizione** mappa ai percorsi CMS area `scienze-della-nutrizione` (es. LM-61 Scienze della Nutrizione Umana). **Gastronomia e ospitalità** resta separata (ospitalità / enogastronomia) e non deve espandersi verso dietetica o LM-61.
 
+Le aree quiz (`giurisprudenza`, `formazione`, `politiche`, `motorie`, …) passano da `QUIZ_AREA_ALIASES` a chiavi `SYNONYMS` allineate al CMS. Si evitano espansioni ampie rumorose (`digitale`, `gestione`) nel prefiltro DB.
+
 Il quality gate **non svuota più i risultati** se nel pool esistono percorsi compatibili col livello scelto: i candidati hard-incompatibili (es. corsi con quiz `magistrale`) vengono esclusi già in pre-filtro e, se serve, si fa **backfill** dal pool.
 
 ### Prezzo e agevolazioni
