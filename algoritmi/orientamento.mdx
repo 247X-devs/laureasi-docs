@@ -62,6 +62,14 @@ Le aree quiz (`giurisprudenza`, `formazione`, `politiche`, `motorie`, …) passa
 
 Il quality gate **non svuota più i risultati** se nel pool esistono percorsi compatibili col livello scelto: i candidati hard-incompatibili (es. corsi con quiz `magistrale`) vengono esclusi già in pre-filtro e, se serve, si fa **backfill** dal pool.
 
+### Formazione Docenti e ruoli creativi
+
+- `livello=docenti` resta hard-filter su `course`, ma i corsi TFA / CFU / classi di concorso (`A001`, `D.P.C.M.`, …) ricevono un **boost dedicato** (`getDocentiCourseBoost`).
+- Il prompt AI chiarisce che `docenti` è una **tipologia di percorso**, non un’aspirazione a insegnare.
+- In **crescita professionale**, il ruolo attuale guida retrieval e ranking se manca il ruolo desiderato (es. `Artista` → arte/creatività/cultura).
+- Varianti I/II anno dello stesso percorso vengono **deduplicate** (`getPathFamilyKey`).
+- Re-rank AI di default su **gpt-4o** (override con `OPENAI_MODEL`), pool 20 candidati.
+
 ### Prezzo e agevolazioni
 
 Se l’utente seleziona una o più fasce (escl. “Nessuna di queste”), il prezzo nei risultati usa la **retta agevolata** del TaxBreak la cui `audience` matcha le fasce dichiarate (stesse label del quiz). L’API espone `appliedBenefitLabel` e `standardFee`: in UI si mostra il prezzo agevolato, la retta standard barrata e una pill “Agevolazione · …”. Se nessun TaxBreak matcha, resta il prezzo catalogo (`reduced_fee` / standard).
@@ -85,4 +93,7 @@ Se l’utente seleziona una o più fasce (escl. “Nessuna di queste”), il pre
 
 ---
 
-*Versione 1.1 — Giugno 2026 — Uso interno riservato*
+*Versione 1.3 — Luglio 2026 — Uso interno riservato*
+
+I valori quiz (`obiettivo`, `livello`, professioni `matchText`, agevolazioni) vivono nel contratto
+`trovaLaureaQuiz.ts` (admin + frontend, da tenere allineati).
