@@ -16,11 +16,12 @@ await sendRankingResultsEmail({
     {
       title: "Laurea in Informatica",
       courseType: "Laurea Magistrale",
+      entityLabel: "Laurea",
       university: "Università di Milano",
-      score: 0.95,
       reason: "Perfetto match con il tuo profilo e i tuoi obiettivi",
       url: "https://laureasi.it/universita/milano/informatica",
       priceLabel: "€ 2.000-3.000/anno",
+      rank: 1,
     },
     // ... altri risultati
   ],
@@ -42,11 +43,13 @@ await sendRankingResultsEmail({
 interface RankingResult {
   title: string; // Nome della laurea/master
   courseType?: string; // Es: "Laurea Magistrale", "Master"
+  entityLabel?: string; // "Laurea" | "Master" | "Corso"
   university: string; // Nome ateneo
-  score: number; // Score da 0 a 1
   reason: string; // Motivo della raccomandazione
   url: string; // Link al corso
   priceLabel?: string; // Es: "€ 1.000-2.000/anno"
+  appliedBenefitLabel?: string | null;
+  rank?: number;
 }
 ```
 
@@ -76,11 +79,12 @@ export async function POST(request: Request) {
   const results = topCandidates.map((c) => ({
     title: c.title,
     courseType: c.courseType,
+    entityLabel: c.entityLabel,
     university: c.university,
-    score: c.score,
     reason: c.reason,
     url: c.url,
     priceLabel: c.priceLabel,
+    rank: c.rank,
   }));
 
   // Invia email se l'utente ha fornito email
@@ -100,20 +104,32 @@ export async function POST(request: Request) {
 
 L'email include:
 
-- ✅ Header con logo branding
-- ✅ Riepilogo profilo dell'utente (obiettivo, area, livello, etc)
-- ✅ Risultati ordinati con score e motivi
-- ✅ Prezzo (se disponibile)
-- ✅ Link diretto al corso
-- ✅ Design responsive per mobile
+- Header con logo LaureaSì (PNG white su fondo primario `#A6192E`)
+- Riepilogo profilo dell'utente (obiettivo, area, livello, ecc.)
+- CTA primaria **Apri i tuoi risultati** (se `resultUrl` è presente)
+- Card risultati allineate al layout sito: badge entity, Scelta #N, titolo, ateneo, motivo, prezzo, CTA outline **Vedi dettagli**
+- Badge **Prima scelta** sulla prima card (senza punteggio %)
+- Sezione **Altri percorsi compatibili** oltre i top 3
+- CTA secondaria **Prenota una consulenza** → `/prenota-consulenza`
+- Design responsive, palette ufficiale Pantone 187 C / 440 C + accent teal
+
+## Branding
+
+| Elemento | Valore |
+| --- | --- |
+| Primario | `#A6192E` |
+| Secondario | `#3A332E` |
+| Tint chiaro | `#F6D1D7` |
+| Logo | `public/email/logo-laureasi-white.png` servito da `PAYLOAD_PUBLIC_SERVER_URL` |
+| Font | Stack di sistema (email-safe) |
 
 ## Gestione errori
 
 Se l'invio fallisce, la funzione:
 
-- 📧 Lancia un errore (catch con try/catch)
-- 🔍 Loga l'errore con prefisso `[Ranking Email]`
-- ❌ NON blocca il flusso dell'API (chiama la funzione in background)
+- Lancia un errore (catch con try/catch)
+- Loga l'errore con prefisso `[Ranking Email]`
+- Non blocca il flusso dell'API (chiama la funzione in background)
 
 ```typescript
 // Esempio: invia ma non bloccare se fallisce
@@ -125,7 +141,7 @@ sendRankingResultsEmail({ ... }).catch(error => {
 
 ## Note
 
-- 🌍 Provider automatico: Mailpit (local), Resend (dev/prod)
-- 📱 HTML stilizzato inline, compatibile con tutti i client email
-- 🎨 Tema coerente con il design di Laureasi
-- 🔗 Link tracciabili verso i corsi
+- Provider automatico: Mailpit (local), Resend (dev/prod)
+- HTML stilizzato inline, compatibile con i client email comuni
+- Tema allineato alla [corporate identity](/brand/colori)
+- Link verso risultati salvati, corsi e consulenza
