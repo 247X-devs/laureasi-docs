@@ -1,5 +1,6 @@
 node_modules/
 .mintlify/
+.cursor/
 .env.screenshots
 playwright-report/
 test-results/
