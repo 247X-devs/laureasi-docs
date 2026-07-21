@@ -56,6 +56,8 @@ flowchart LR
 
 Per **crescita professionale** e **cambio carriera**, il ruolo si sceglie da una lista fissa (con campo **Altro** a testo libero). Il frontend invia un `matchText` arricchito; il ranking espande token con alias e sinonimi di dominio (`ROLE_TOKEN_ALIASES`, `ROLE_DOMAIN_SYNONYMS`) contro titolo, area e piano di studi.
 
+**Nutrizione ≠ Gastronomia:** nel quiz l’area **Nutrizione** mappa ai percorsi CMS area `scienze-della-nutrizione` (es. LM-61 Scienze della Nutrizione Umana). **Gastronomia e ospitalità** resta separata (ospitalità / enogastronomia) e non deve espandersi verso dietetica o LM-61.
+
 Il quality gate **non svuota più i risultati** se nel pool esistono percorsi compatibili col livello scelto: i candidati hard-incompatibili (es. corsi con quiz `magistrale`) vengono esclusi già in pre-filtro e, se serve, si fa **backfill** dal pool.
 
 ### Prezzo e agevolazioni
