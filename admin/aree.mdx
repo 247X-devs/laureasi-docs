@@ -34,7 +34,19 @@ Menu laterale → **📝 Contenuti** → **Aree Tematiche**
 
 ## Collegamento ai percorsi
 
-I corsi, lauree e master possono essere associati a una o più aree. Questo alimenta filtri, navigazione e il quiz di orientamento.
+Ogni corso, laurea o master è associato a **una sola** area tematica (campo relazione nel CMS). Questo alimenta filtri, navigazione, Confronta-corsi e il quiz di orientamento.
+
+## Consolidare o rinominare aree
+
+Non modificare a mano in produzione le merge tra aree (remap di `area_id` + delete). Usa una **migrazione Payload** in `laureasi-admin`:
+
+```bash
+npm run migrate:create -- --name consolidate_areas_…
+```
+
+Nella migrazione, risolvi le aree per **slug** (gli id possono cambiare tra ambienti), rimappa `degrees` / `masters` / `courses`, poi elimina l'area di origine. Aggiungi redirect permanenti in `laureasi-frontend/vercel.json` per gli slug dismessi (`/area/…`, `/master/area/…`).
+
+Esempio già applicato: Pedagogia → Scienze della Formazione e Pedagogia (`scienze-della-formazione`).
 
 ## Guide correlate
 

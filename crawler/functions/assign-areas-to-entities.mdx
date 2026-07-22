@@ -26,6 +26,7 @@ Compatibilita': sono ancora accettati i parametri legacy in camelCase (`entityTy
 - Riallineare la classificazione aree dopo ingest massivo.
 - Popolare `area_id` per nuove entita' senza area.
 - Ricalcolare aree per uno specifico set di record.
+- Dopo una migrazione che consolida/rinomina aree CMS: l'AI legge i titoli aggiornati da `areas_payload`; usa `overwrite: true` solo se vuoi riassegnare anche i record gia' classificati.
 
 ## Risposta
 
