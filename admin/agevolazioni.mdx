@@ -63,7 +63,40 @@ Le agevolazioni selezionate dall'utente nel quiz:
 1. influenzano il ranking (+10 se l’ateneo ha un TaxBreak con `audience` compatibile);
 2. personalizzano il **prezzo mostrato** nei risultati: si applica la retta agevolata del TaxBreak matchato, con indicatore UI della fascia (pill “Agevolazione”) e retta standard barrata.
 
-Le label del quiz devono allinearsi al testo in `audience` sul TaxBreak (es. DSA, Forze Armate, Pubblica Amministrazione). Vedi [Algoritmo di orientamento](/algoritmi/orientamento).
+### Prerequisiti perché il prezzo agevolato compaia
+
+Se manca anche uno solo di questi punti, nei risultati resta il prezzo catalogo (senza pill).
+
+| Requisito | Dettaglio |
+| --- | --- |
+| **Ambito supportato** | Usa `università`, `tipologia corso`, `categoria destinatari` o `percorso specifico`. L’ambito **Altro** non personalizza il prezzo quiz. |
+| **Tipologia percorso** | Con ambito `tipologia corso`, imposta correttamente **Tipologia percorso target** (es. laurea triennale): vale per tutti i percorsi di quel tipo nell’ateneo. |
+| **Audience** | Compila almeno una voce in `audience` con testo riconoscibile dalle fasce quiz (vedi sotto). Senza audience il TaxBreak non matcha il quiz. |
+| **Importi** | Compila almeno uno tra prezzo agevolato fisso, riduzione % o riduzione in €. Percentuale e importo richiedono `standard_fee` sul percorso. |
+| **Percorso** | Il degree/course/master non deve avere **Escludi da agevolazioni**. Deve avere `standard_fee` se lo sconto è % o in €. |
+| **Stato** | TaxBreak attivo e dentro le date di validità; università corretta. |
+
+### Testo `audience` ↔ fasce quiz
+
+Il match è per **substring** (case-insensitive) sul testo `audience`. Usa termini che contengano queste keyword:
+
+| Fascia quiz | Keyword riconosciute (esempi) |
+| --- | --- |
+| Disabilità | `disabilit` |
+| DSA | `dsa`, `disturbi specifici` |
+| Forze Armate | `forze armate`, `militare`, `marina militare`, `esercito italiano`, … |
+| Forze dell'Ordine | `forze dell'ordine`, `polizia di stato`, `guardia di finanza` |
+| Giovani 17–22 anni | `giovani`, `futuro sicuro`, `under 26` |
+| Neo Genitori | `neo genit` |
+| Pubblica Amministrazione | `pubblica amministrazione`, `dipendenti pubblici`, `p.a.` |
+| Dolce Attesa | `gravidanza`, `dolce attesa` |
+
+Esempi che funzionano: “Dipendenti della Pubblica Amministrazione”, “Dipendenti pubblici”, “Studenti under 26”, “Marina Militare”.
+Esempi che **non** matchano senza keyword: audience vuota, solo “Laureati”, solo “Studenti trasferiti”.
+
+La fascia **Nessuna di queste** (o nessuna selezione) non personalizza il prezzo.
+
+Vedi anche [Algoritmo di orientamento](/algoritmi/orientamento#prezzo-e-agevolazioni).
 
 ## Guide correlate
 
