@@ -39,7 +39,12 @@ La sezione **In evidenza** della homepage mostra contenuti selezionati manualmen
 
 ## Quanti contenuti mostrare?
 
-Il numero di slot in homepage dipende dal layout del frontend. Se troppi contenuti sono in evidenza, il sito ne mostrerà un sottoinsieme (es. i più recenti o per tipo).
+Il numero di slot in homepage dipende dal layout del frontend. Se troppi contenuti sono in evidenza, il sito ne mostra un sottoinsieme ordinato così:
+
+1. Atenei partner (`is_partner`) prima degli altri
+2. Tra i partner (e tra i non partner), rating ateneo più alto prima
+
+Pegaso, Mercatorum e San Raffaele Roma rientrano nel gruppo partner se il flag è attivo sulla scheda università.
 
 <Note>
 Non tutti i tipi di contenuto compaiono nella stessa sezione della homepage. Lauree, master e corsi hanno aree dedicate; le testimonianze usano anche il campo **Ordine**.
