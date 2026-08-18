@@ -114,23 +114,27 @@ Settings → Branches → Add rule:
 PR → develop/main  (o push → develop)
   → Deploy Preview chiama ci.yml: lint, typecheck, vitest
   → build-smoke: yarn build, test:scripts, test:env
-  → deploy: vercel build (build:seo + PRERENDER_STRICT)
-  → verify:prerender (report + file campione)
+  → deploy: vercel build con SKIP_PRERENDER=true (SPA, niente catalogo prerender)
   → vercel deploy --prebuilt
   → e2e-smoke: Playwright su preview URL / develop.laureasi.it
 
 push → main
-  → Deploy Production chiama ci.yml (+ stesso pipeline prod)
+  → Deploy Production chiama ci.yml
+  → deploy: vercel build (build:seo + PRERENDER_STRICT)
+  → verify:prerender (report + file campione, rifiuta shell “non trovato”)
+  → vercel deploy --prebuilt --prod
 ```
 
 Variabili prerender in deploy:
 
-| Variabile | Valore in CI prod/preview |
-|-----------|---------------------------|
-| `PRERENDER_STRICT` | `true` |
-| `PRERENDER_MAX_ROUTES` | vuoto (tutte le route) |
-| `PRERENDER_CONCURRENCY` | `6` |
-| `SKIP_PRERENDER` | non impostato |
+| Variabile | Preview / develop | Production / CMS rebuild |
+|-----------|-------------------|--------------------------|
+| `SKIP_PRERENDER` | `true` | non impostato |
+| `PRERENDER_STRICT` | — | `true` |
+| `PRERENDER_MAX_ROUTES` | — | vuoto (tutte le route) |
+| `PRERENDER_CONCURRENCY` | — | `6` |
+
+Su preview le schede sono SPA (skeleton → contenuti). L’HTML SEO prerenderizzato è solo production. I test unitari (`entry-server`, `validateOutput`) coprono lo shape prefetch/cache senza rendere il catalogo.
 
 ## Verifica manuale post-deploy
 
