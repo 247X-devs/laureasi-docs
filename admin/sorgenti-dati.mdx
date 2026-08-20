@@ -38,11 +38,13 @@ Sulle schede **Lauree**, **Master** e **Corsi online** il pulsante **Sorgente** 
 
 ```mermaid
 flowchart LR
-    A[Discover sources] --> B[Scrape]
+    A[Riallinea URL] --> B[Scrape]
     B --> C[Ingest]
     C --> D[Normalize]
     D --> E[Scheda aggiornata]
 ```
+
+A fine estate, prima dello scrape, riallinea gli URL all'anno accademico. Vedi [Riallineamento catalogo](/crawler/riallineamento-catalogo).
 
 Per il dettaglio tecnico vedi [Edge Functions](/piattaforma/edge-functions) e [Crawler](/crawler).
 
@@ -56,4 +58,5 @@ Per il dettaglio tecnico vedi [Edge Functions](/piattaforma/edge-functions) e [C
 
 - [Università](/admin/universita)
 - [Lauree, Master e Corsi](/admin/percorsi)
+- [Riallineamento catalogo](/crawler/riallineamento-catalogo)
 - [Crawler — panoramica](/crawler)
