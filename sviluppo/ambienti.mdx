@@ -22,6 +22,14 @@ Il monorepo usa 4 profili applicativi condivisi:
 `lovable` eredita da `develop`: in pratica `lovable = develop + override`. Tieni `lovable` minimale, con sole chiavi diverse da `develop`.
 </Note>
 
+## Database pooler (admin)
+
+Tieni `DATABASE_URI` sul **session pooler (porta 5432)**. Su 6543 le migrazioni Payload possono risultare applicate senza committare l'SQL.
+
+Su Vercel l'admin riscrive a runtime il pooler `5432` → `6543`. In transaction mode i client serverless vengono multiplexati. In session mode il branch develop ha `pool_size` 15: pochi isolate bastavano a saturarlo e Payload non si inizializzava.
+
+Postgres locale e `yarn migrate` restano su 5432. Non mettere 6543 nei secret Vercel o GitHub.
+
 ## Best practice
 
 - Mantieni i file `*.example` come contratto delle variabili richieste
