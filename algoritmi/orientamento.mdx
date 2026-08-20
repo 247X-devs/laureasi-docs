@@ -72,7 +72,7 @@ Il quality gate **non svuota più i risultati** se nel pool esistono percorsi co
 
 ### Prezzo e agevolazioni
 
-Se l’utente seleziona una o più fasce (escl. “Nessuna di queste”), il prezzo nei risultati usa la **retta agevolata** del TaxBreak la cui `audience` matcha le fasce dichiarate (stesse label del quiz). Ambito ammessi: `university`, `course_type`, `audience_category`, `specific_item` (non `other`). L’API espone `appliedBenefitLabel` e `standardFee`: in UI si mostra il prezzo agevolato, la retta standard barrata e una pill “Agevolazione · …”. Se nessun TaxBreak matcha, resta il prezzo catalogo (`reduced_fee` / standard). Dettagli operativi CMS in [Agevolazioni](/admin/agevolazioni#collegamento-al-quiz-di-orientamento).
+Se l’utente seleziona una o più fasce (escl. “Nessuna di queste”), il prezzo nei risultati usa la **retta agevolata** del TaxBreak le cui **Categorie quiz** (`quizCategories`) intersecano le fasce dichiarate (label FE → chiavi canoniche). Ambito ammessi: `university`, `course_type`, `audience_category`, `specific_item` (non `other`). L’API espone `appliedBenefitLabel` e `standardFee`: in UI si mostra il prezzo agevolato, la retta standard barrata e una pill “Agevolazione · …”. Se nessun TaxBreak matcha, resta il prezzo catalogo (`reduced_fee` / standard). Dettagli operativi CMS in [Agevolazioni](/admin/agevolazioni#collegamento-al-quiz-di-orientamento).
 
 ## Come intervenire sui risultati
 
@@ -93,7 +93,7 @@ Se l’utente seleziona una o più fasce (escl. “Nessuna di queste”), il pre
 
 ---
 
-*Versione 1.4 — Agosto 2026 — Uso interno riservato*
+*Versione 1.5 — Agosto 2026 — Uso interno riservato*
 
 I valori quiz (`obiettivo`, `livello`, professioni `matchText`, agevolazioni) vivono nel contratto
 `trovaLaureaQuiz.ts` (admin + frontend, da tenere allineati).
