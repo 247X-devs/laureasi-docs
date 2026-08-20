@@ -152,6 +152,7 @@
               {
                 "group": "Manutenzione",
                 "pages": [
+                  "crawler/riallineamento-catalogo",
                   "crawler/functions/refresh-fields",
                   "crawler/functions/reconcile-data-sources",
                   "crawler/functions/cleanup-entities"

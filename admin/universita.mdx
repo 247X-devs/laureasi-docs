@@ -23,13 +23,41 @@ Menu laterale → **🏛️ Università**
 | Campo | A cosa serve |
 | --- | --- |
 | Nome Università | Titolo sulla scheda pubblica |
-| Slug | URL dell'ateneo (`/universita/[slug]`) |
+| Slug | URL dell'ateneo (`/universita/[slug]`). Usa il brand pubblico, senza `universita` o `telematica` (es. `unipegaso`) |
 | Logo | Immagine brand |
 | Sito Web / Email / Telefono | Contatti pubblici |
 | Descrizione Breve | Testo introduttivo |
 | Università Partner | Boost nel quiz di orientamento |
 | Moltiplicatore score quiz | Leva avanzata sul ranking (solo admin tecnici) |
 | Metadati Aggiuntivi | Coppie chiave-valore extra |
+
+## Convenzione slug
+
+Lo slug è il brand pubblico, non il nome legale.
+
+- Non prefissare con `universita` o `telematica`: il path è già `/universita/[slug]`
+- Preferisci lo stem del dominio (`unipegaso`, `unicusano`, `ecampus`)
+- Non cambiarlo dopo il go-live senza un redirect 301 in `laureasi-frontend/vercel.json`
+
+| Ateneo | Slug |
+| --- | --- |
+| Pegaso | `unipegaso` |
+| eCampus | `ecampus` |
+| San Raffaele | `san-raffaele` |
+| Giustino Fortunato | `unifortunato` |
+| Guglielmo Marconi | `unimarconi` |
+| Uninettuno | `uninettuno` |
+| Leonardo da Vinci | `unidav` |
+| Niccolò Cusano | `unicusano` |
+| Unitelma Sapienza | `unitelma` |
+| IUL | `iul` |
+| Mercatorum | `unimercatorum` |
+
+Gli slug lunghi `universita-telematica-*` restano raggiungibili con redirect permanenti.
+
+<Warning>
+Prima applica la migrazione admin che rinomina gli slug, poi pubblica il frontend con i 301. Se inverti l'ordine, le URL nuove rispondono 404.
+</Warning>
 
 ## Esportare in CSV
 
