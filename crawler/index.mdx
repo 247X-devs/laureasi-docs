@@ -37,6 +37,7 @@ Documentazione centralizzata delle Edge Functions presenti nel repository `laure
 ### Manutenzione
 
 <CardGroup cols={2}>
+  <Card title="Riallineamento catalogo" href="/crawler/riallineamento-catalogo" />
   <Card title="refresh-fields" href="/crawler/functions/refresh-fields" />
   <Card title="reconcile-data-sources" href="/crawler/functions/reconcile-data-sources" />
   <Card title="cleanup-entities" href="/crawler/functions/cleanup-entities" />
@@ -44,11 +45,12 @@ Documentazione centralizzata delle Edge Functions presenti nel repository `laure
 
 ## Runbook data source
 
-1. Eseguire il check di integrità dal control plane Payload
-2. `reconcile-data-sources` in `dry_run=true`
-3. `reconcile-data-sources` con `dry_run=false` dopo verifica
-4. Scrape mirato delle righe in `unmatched_for_scrape`
-5. `cleanup-entities` per duplicati/orfani
+1. [Riallineare gli URL](/crawler/riallineamento-catalogo) se l'anno accademico è cambiato
+2. Eseguire il check di integrità dal control plane Payload
+3. `reconcile-data-sources` in `dry_run=true`
+4. `reconcile-data-sources` con `dry_run=false` dopo verifica
+5. Scrape mirato delle righe in `unmatched_for_scrape`
+6. `cleanup-entities` per duplicati/orfani
 
 ## Runbook update campi
 
