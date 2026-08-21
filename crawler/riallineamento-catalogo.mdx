@@ -69,7 +69,7 @@ flowchart TD
 ## Adapter
 
 - **eCampus** — catalogo Cineca ` /api/v1/corsi?anno=YYYY `. Non usare lo status HTTP delle pagine corso: la SPA risponde 200 anche se il `cds` non esiste.
-- **Anno nell'URL** — riscrittura + probe. Se il nuovo URL redirige al vecchio, l'anno non è pubblicato (oggi IUL).
+- **Anno nell'URL** — riscrittura + probe. Se il nuovo URL redirige al vecchio, l'anno non è pubblicato.
 - **Map** — Firecrawl Map dalla sorgente `universita`, filtrata dalle regex in `FIRECRAWL_MAP_URL_REGEX_BY_HOST`, poi probe HTTP.
 
 <Warning>
@@ -80,7 +80,7 @@ La sitemap non è prova di esistenza. Pegaso ha elencato percorsi abilitanti che
 
 - **Pegaso**: sitemap con pagine non pubblicate; non creare senza probe 200.
 - **eCampus**: SPA sempre-200; duplicati sullo stesso `cds` → una rinomina, il resto disattivato.
-- **IUL**: `2026-2027` redirige a `2025-2026` finché il sito non pubblica l'anno nuovo.
+- **IUL**: l'a.a. 2026/2027 è online, ma WordPress ha creato post nuovi con suffisso `-2` (LM-91 → `-2-2`). Riscrivere solo l'anno nell'URL redirige ancora al 2025/2026: serve rinomina slug, non `catalog:diff` year.
 - **San Raffaele**: coppie `-modalita-fad` / `-modalita-blended` fuse in una pagina.
 - **Cusano**: redirect 200 verso la pagina di categoria (soft-404): resta in `verifica`.
 
