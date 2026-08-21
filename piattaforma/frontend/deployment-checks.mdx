@@ -136,6 +136,8 @@ Variabili prerender in deploy:
 
 Su preview le schede sono SPA (skeleton → contenuti). L’HTML SEO prerenderizzato è solo production. I test unitari (`entry-server`, `validateOutput`) coprono lo shape prefetch/cache senza rendere il catalogo.
 
+Le schede catalogo (laurea, master, corso, ateneo) espongono JSON-LD in head: `Course` con provider `CollegeOrUniversity`, `CollegeOrUniversity` sull’ateneo e `BreadcrumbList` allineato al nav visivo. Non marcare il rating CMS degli atenei come `AggregateRating`: è un punteggio editoriale, non recensioni di terze parti.
+
 ## Verifica manuale post-deploy
 
 ```bash
