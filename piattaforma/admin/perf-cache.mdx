@@ -21,7 +21,7 @@ Document the decision in the PR before adding KV.
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `LAUREASI_USE_CATALOG_STATS_API` | `false` (frontend) | CategoryPage uses `/api/catalog/category-stats` |
+| `VITE_USE_CATALOG_STATS_API` | `true` (frontend) | Category pages call `/api/catalog/category-stats`. Set `false` to force GraphQL pagination. If the catalog API fails, the frontend still falls back to GraphQL. |
 | `LAUREASI_RUNTIME_CACHE_ENABLED` | `true` (admin) | Disable to force in-process fallback |
 | `LAUREASI_USE_CATALOG_STATS_SQL` | `true` (admin) | Set `false` to force Payload pagination fallback |
 
