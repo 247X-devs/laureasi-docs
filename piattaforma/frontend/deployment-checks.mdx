@@ -138,13 +138,16 @@ Su preview le schede sono SPA (skeleton → contenuti). L’HTML SEO prerenderiz
 
 Le schede catalogo (laurea, master, corso, ateneo) espongono JSON-LD in head: `Course` con provider `CollegeOrUniversity`, `CollegeOrUniversity` sull’ateneo e `BreadcrumbList` allineato al nav visivo. Non marcare il rating CMS degli atenei come `AggregateRating`: è un punteggio editoriale, non recensioni di terze parti.
 
+`og:title`, `og:description` e `og:url` arrivano solo da Helmet (`DefaultSeo` / `PageSeo`). Non inserirli in `index.html`: Facebook, LinkedIn e Slack usano il primo tag, quindi un fallback homepage coprirebbe il meta della scheda. `validateOutput` fallisce se su una scheda catalogo il primo `og:title` è ancora quello della home.
+
 ## Verifica manuale post-deploy
 
 ```bash
 curl -s https://www.laureasi.it/percorsi | grep -E '<title>|aria-busy'
+curl -s https://www.laureasi.it/universita/unimercatorum/master/management-sanitario | grep -E 'og:title|og:url|og:description' | head
 ```
 
-Atteso: `<title>` presente, nessun `aria-busy="true"` come unico contenuto del root.
+Atteso: `<title>` presente, nessun `aria-busy="true"` come unico contenuto del root. Il primo `og:title` / `og:url` deve essere della scheda, non della homepage.
 
 Ripetere su una route dinamica (articolo blog, pagina laurea dalla sitemap).
 
@@ -154,6 +157,7 @@ Ripetere su una route dinamica (articolo blog, pagina laurea dalla sitemap).
 |---------|--------|
 | Build prerender fallisce in CI | Leggere `prerender-report.json` nel log/summary; riprodurre con `yarn build:seo` e `PRERENDER_STRICT=true` in locale dopo `vercel pull` |
 | Pagine vuote in produzione | Verificare che `dist/{route}/index.html` esista e che il rewrite SPA sia solo fallback |
+| Share social con titolo/URL della home | `index.html` non deve avere `og:title` / `og:description` / `og:url` statici; il primo tag nel view-source deve coincidere con la scheda |
 | Check Vercel restano pending | Repo non linkato o SHA deploy diverso dal commit dei check |
 | E2E smoke fallisce | Scaricare report Playwright dall'artifact GHA; riprodurre in locale con `E2E_BASE_URL=<url>` |
 | Build troppo lenta | Monitorare `p95DurationMs` nel report; valutare tuning di `PRERENDER_CONCURRENCY` |
