@@ -47,3 +47,9 @@ Il body e' quello inviato da Firecrawl. Campi principali:
 - Il routing del processor `enrollment-update` dipende da `metadata.mode` valorizzato nei batch start.
 - `target_fields` e `default_academic_year` vengono passati via metadata e usati dal processor.
 - In caso di webhook duplicati, i record raw possono duplicarsi: valutare strategie di idempotenza a livello DB.
+
+## Guard su anno e retta
+
+I processor `laurea`, `master` e `corso` non sovrascrivono un anno accademico CMS con uno scrape più vecchio o invalido (`Not specified`). Non azzerano una retta già valorizzata se lo scrape torna `0` o vuoto. Un importo positivo nuovo (anche più basso) viene scritto. `refresh-fields` / `enrollment-update` applicano lo stesso guard sull'anno.
+
+L'anno accademico in CMS è sempre `YYYY/YYYY` (es. `2026/2027`), senza spazi. Lo scrape `corrente` (match esatto, case-insensitive) diventa l'anno di iscrizione: dal 1° luglio `N` si scrive `N/N+1` (es. dal 1 luglio 2026 → `2026/2027`). Altri valori non parseabili (`n/d`, `Not specified`) non aggiornano il campo. Un anno scrape più vecchio del CMS non viene scritto.
