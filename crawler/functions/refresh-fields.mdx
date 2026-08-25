@@ -42,8 +42,10 @@ Se `mode` e' omesso: `dry_run: true` → `scope`, altrimenti → `batch`.
 
 1. Crea job in `ingest.refresh_fields_scan_jobs`
 2. Avvia batch Firecrawl con `deterministicJson` + `maxAge`
-3. `webhook-ingest` confronta ogni pagina e salva in `ingest.refresh_fields_scan_items`
+3. `webhook-ingest` confronta ogni pagina e salva in `ingest.refresh_fields_scan_items`. Un anno accademico scrape più vecchio o invalido non viene proposto.
 4. Al completamento batch, aggrega il report finale
+
+In CMS l'anno accademico è `YYYY/YYYY` (es. `2026/2027`), senza spazi. Lo scrape `corrente` (match esatto, case-insensitive) diventa l'anno di iscrizione dal 1° luglio (`N` → `N/N+1`); altri valori non parseabili non aggiornano il campo. `default_academic_year` nei metadata del batch vale solo per `corrente`.
 
 Risposta immediata:
 - `data.scan_id`: ID per polling
