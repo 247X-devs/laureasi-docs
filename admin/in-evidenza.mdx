@@ -37,14 +37,33 @@ La sezione **In evidenza** della homepage mostra contenuti selezionati manualmen
   </Step>
 </Steps>
 
-## Quanti contenuti mostrare?
+## Quanti contenuti mostrare
 
-Il numero di slot in homepage dipende dal layout del frontend. Se troppi contenuti sono in evidenza, il sito ne mostra un sottoinsieme ordinato così:
+Il numero di slot in homepage dipende dal layout del frontend.
+
+Per lauree, master e corsi, se troppi contenuti sono in evidenza, il sito ne mostra un sottoinsieme ordinato così:
 
 1. Atenei partner (`is_partner`) prima degli altri
 2. Tra i partner (e tra i non partner), rating ateneo più alto prima
 
 Pegaso, Mercatorum e San Raffaele Roma rientrano nel gruppo partner se il flag è attivo sulla scheda università.
+
+### Aree in evidenza
+
+Le aree sono ordinate tramite `featured_order` e raggruppate per macro area. La homepage mostra la label della macro area.
+
+Le macro aree attuali sono:
+
+- Benessere e Sport
+- Economia e Management
+- Educazione e Formazione
+- Giuridica e Amministrativa
+- Informatica e Tecnologie Digitali
+- Ingegneria
+- Lingue
+- Psicologia
+
+Per aggiungere una macro area alla homepage, attiva **In evidenza** su un'area del gruppo. Per rimuoverla, disattiva **In evidenza** su tutte le aree del gruppo. Non eliminare l'area.
 
 <Note>
 Non tutti i tipi di contenuto compaiono nella stessa sezione della homepage. Lauree, master e corsi hanno aree dedicate; le testimonianze usano anche il campo **Ordine**.
