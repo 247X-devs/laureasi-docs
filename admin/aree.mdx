@@ -1,65 +1,75 @@
 ---
-title: Guida alle Aree Tematiche
-description: Come creare e gestire le aree di studio nel pannello admin.
+title: Guida alle Aree e Sotto-aree
+description: Come creare e gestire le aree di studio e le sotto-aree nel pannello admin.
 ---
 
-Le **Aree Tematiche** raggruppano i percorsi per macro-settore (es. Economia, Informatica, Sanità).
+Le **Aree** raggruppano le **Sotto-aree** per settore (es. Economia e Management). I percorsi (lauree, master, corsi) restano agganciati alla sotto-area.
 
 ## Dove trovarle
 
-Menu laterale → **📝 Contenuti** → **Aree Tematiche**
-
-<Frame caption="Lista aree tematiche">
-  <img src="/images/admin/aree-lista.png" alt="Lista delle aree tematiche nel pannello admin" />
-</Frame>
+Menu laterale → **📝 Contenuti** → **Aree** (padre) e **Sotto-aree** (figlie)
 
 ## Creare un'area
 
 <Steps>
   <Step title="Crea nuovo">
-    Clicca **Crea nuovo** nella lista aree.
+    In **Aree**, clicca **Crea nuovo**.
   </Step>
-  <Step title="Compila i campi">
-    - **Titolo** — nome dell'area mostrato sul sito
-    - **Slug** — parte dell'URL (es. `informatica`)
-    - **Descrizione** — testo introduttivo
-    - **Immagine rappresentativa** — icona o foto dell'area
-    - **Macro area** — categoria di appartenenza (se prevista)
-    - **In evidenza** — per far comparire la **macro area** in homepage
-    - **Ordine in evidenza** — posizione della macro in homepage (si usa il valore più basso del gruppo)
+  <Step title="Compila i dati">
+    - **Titolo** — nome mostrato sul sito (es. Economia e Management)
+    - **Slug** — parte dell'URL `/aree/[slug]`. Non rinominarlo dopo il go-live
+    - **Descrizione** e **Immagine rappresentativa**
   </Step>
-  <Step title="Salva">
-    L'area sarà raggiungibile su `/area/[slug]` sul sito pubblico.
+  <Step title="In evidenza">
+    In sidebar, spunta **In evidenza (homepage)** e imposta **Ordine in evidenza** (1 = primo).
+  </Step>
+  <Step title="Sotto-aree">
+    Il tab **Sotto-aree** elenca i documenti collegati. Aprili da lì per modificarli.
   </Step>
 </Steps>
 
-## Area e macro area
+## Creare una sotto-area
 
-- **Area** — documento CMS associato a un percorso. Ha una pagina pubblica su `/area/[slug]`.
-- **Macro area** — categoria predefinita che raggruppa più aree. Non ha una pagina propria. La homepage e `/aree` mostrano la label della macro area.
-- **In evidenza** e **Ordine in evidenza** — spunta un'area del gruppo per mostrare la **macro area** in homepage. Togli **In evidenza** da tutte le aree del gruppo per rimuovere la macro area.
+<Steps>
+  <Step title="Crea nuovo">
+    In **Sotto-aree**, clicca **Crea nuovo**.
+  </Step>
+  <Step title="Compila i campi">
+    - **Titolo** e **Slug** (es. `scienze-economiche`)
+    - **Area** — picker verso l'Area padre
+    - **Descrizione** e **Immagine**
+  </Step>
+  <Step title="Salva">
+    La pagina pubblica è `/aree/[area]/[sotto-area]`. Le URL vecchie `/area/[slug]` reindirizzano lì.
+  </Step>
+</Steps>
+
+## Area e sotto-area
+
+- **Area** — documento CMS padre. Pagina: `/aree/[slug]` (es. `/aree/economia-e-management`). La homepage **Aree in evidenza** punta qui.
+- **Sotto-area** — documento CMS collegato a un percorso. Pagina: `/aree/[area]/[sotto-area]`.
+- **In evidenza** e **Ordine in evidenza** — si impostano sull'**Area**, non sulla sotto-area.
+- **Vuote** — una sotto-area senza laurea, master o corso non compare sul sito. Un'Area compare in homepage e in `/aree` solo se ha almeno una sotto-area popolata.
 
 ## Collegamento ai percorsi
 
-Ogni corso, laurea o master è associato a **una sola** area tematica (campo relazione nel CMS). Questo alimenta filtri, navigazione, Confronta-corsi e il quiz di orientamento.
+Ogni corso, laurea o master è associato a **una sola sotto-area** (campo **Area** sulla scheda percorso). Questo alimenta filtri, navigazione, Confronta-corsi e il quiz di orientamento.
 
-## Consolidare o rinominare aree
+## Consolidare o rinominare sotto-aree
 
-Non modificare a mano in produzione le merge tra aree (remap di `area_id` + delete). Usa una **migrazione Payload** in `laureasi-admin`:
+Non modificare a mano in produzione le merge tra sotto-aree (remap di `area_id` + delete). Usa una **migrazione Payload** in `laureasi-admin`:
 
 ```bash
 npm run migrate:create -- --name consolidate_areas_…
 ```
 
-Nella migrazione, risolvi le aree per **slug** (gli id possono cambiare tra ambienti), rimappa `degrees` / `masters` / `courses`, poi elimina l'area di origine. Aggiungi redirect permanenti in `laureasi-frontend/vercel.json` per gli slug dismessi (`/area/…`, `/master/area/…`).
+Nella migrazione, risolvi le sotto-aree per **slug** (gli id possono cambiare tra ambienti), rimappa `degrees` / `masters` / `courses`, poi elimina il documento di origine. Aggiungi redirect permanenti in `laureasi-frontend/vercel.json` per gli slug dismessi (`/area/…`, `/aree/…`, `/master/area/…`).
 
 Esempio già applicato: Pedagogia → Scienze della Formazione e Pedagogia (`scienze-della-formazione`).
 
 ## Chip Confronta corsi
 
-Nella pagina **Confronta corsi**, i chip “Esplora per area” possono aggregare **più aree CMS** o un’intera **macro area** (es. Economia → tutte le aree `economia_e_management`; Scienze Politiche → Politiche + Relazioni internazionali + Amministrazione pubblica).
-
-Questo allinea il linguaggio prodotto al catalogo senza fondere le aree nel CMS: la tassonomia resta fine per nav e filtri.
+Nella pagina **Confronta corsi**, i chip “Esplora per area” possono aggregare **più sotto-aree** o un’intera **Area** (es. Economia → tutte le sotto-aree di Economia e Management; Scienze Politiche → Politiche + Relazioni internazionali + Amministrazione pubblica).
 
 ## Guide correlate
 
