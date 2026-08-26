@@ -67,6 +67,25 @@ Nella migrazione, risolvi le sotto-aree per **slug** (gli id possono cambiare tr
 
 Esempio già applicato: Pedagogia → Scienze della Formazione e Pedagogia (`scienze-della-formazione`).
 
+## Accorpare Aree padre
+
+Non unire a mano i padri in produzione. Usa una migrazione Payload che rimappa `areas_payload.macro_area_id` per slug, poi elimina i padri svuotati. I percorsi restano sulla stessa sotto-area: cambia solo l’URL `/aree/[padre]/…`.
+
+Aggiungi redirect permanenti in `laureasi-frontend/vercel.json` per ogni slug padre dismesso (`/aree/[vecchio]` e `/aree/[vecchio]/:path*`).
+
+Esempio già applicato (`20260826_100302_consolidate_macro_areas_taxonomy`): 21 padri → 13 visibili + **Altro** interno.
+
+| Da | A |
+| --- | --- |
+| Architettura e Design | Arte, design e patrimonio (`arte-e-patrimonio-culturale`) |
+| Turismo e Mobilità | Economia e Management |
+| Nutrizione, Agraria, Biologia, Ambiente | Salute e Professioni Sanitarie |
+| Scienze Matematiche e Naturali | Ingegneria |
+
+Lo slug di Arte non cambia. **Altro** resta nel CMS, senza sotto-aree, e non compare sul sito.
+
+Ordine di deploy: prima la migrazione admin, poi il frontend con i redirect. Altrimenti `/aree/arte-e-patrimonio-culturale/design` 404 finché Design non è stato riparentato.
+
 ## Chip Confronta corsi
 
 Nella pagina **Confronta corsi**, i chip “Esplora per area” possono aggregare **più sotto-aree** o un’intera **Area** (es. Economia → tutte le sotto-aree di Economia e Management; Scienze Politiche → Politiche + Relazioni internazionali + Amministrazione pubblica).
