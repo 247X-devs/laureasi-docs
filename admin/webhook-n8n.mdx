@@ -48,6 +48,31 @@ Solo gli utenti con ruolo **Admin** possono modificare queste impostazioni.
 
 Il payload include i dati del lead (nome, email, telefono, fonte, UTM, metadati) e, per il quiz, le informazioni collegate al risultato.
 
+n8n inoltra il contatto anche ad **Aurora CRM**. Non copiare gli id del CMS nei campi `ateneo` e `corso` del contatto: sono cataloghi diversi.
+
+### Id nel payload
+
+| Campo | Dove | Uso in n8n |
+| --- | --- | --- |
+| `lead.metadata.entity_id` | Form su scheda laurea, master o corso | Cerca il corso Aurora con `id_sorgente` uguale e scrive `idCorso` |
+| `lead.metadata.university_id` | Form su scheda percorso o ateneo | Mappa l'ateneo Aurora (tabella sotto) |
+| `lead.metadata.entity_type` | Stesso metadata | Se vale `universita`, non cercare un corso: usa solo l'ateneo |
+| `quiz.results[0].id` | Quiz Trova Laurea | Fallback di `entity_id` se il metadata non c'è |
+| `quiz.results[0].universityId` | Quiz Trova Laurea | Fallback di `university_id` |
+
+### Mappa atenei CMS → Aurora
+
+`GET /atenei` in Aurora ha solo 6 righe. Gli id non coincidono con il CMS, tranne Pegaso.
+
+| CMS | Ateneo | Aurora |
+| --- | --- | --- |
+| 1 | Pegaso | 1 |
+| 2 | San Raffaele | 3 |
+| 3 | Mercatorum | 2 |
+| 4–11 | eCampus, IUL, altri | 6 (Non assegnato) |
+
+Se il percorso CMS non esiste in Aurora (`id_sorgente` assente), n8n scrive `corso=0` e l'ateneo mappato (o **6**).
+
 ## Guide correlate
 
 - [Consultare i Leads](/admin/leads)
