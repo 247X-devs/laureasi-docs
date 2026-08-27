@@ -34,7 +34,7 @@ Il body e' quello inviato da Firecrawl. Campi principali:
 
 1. Valida il metodo HTTP (`POST`).
 2. Salva ogni evento in `ingest.scraping_raw_data` con `source_id` risolto.
-3. Su evento `page`: elabora il payload nel processor corretto in base a `metadata.mode`/`entity_type`.
+3. Su evento `page`: elabora il payload nel processor corretto in base a `metadata.mode`/`entity_type`. Dopo un process riuscito (anche `update_enrollment_fields`) marca `data_sources.last_scraped_at` e aggiorna `source_updated_at` sulle entità collegate (`related_degree` / `related_master` / `related_course` / `related_university`) con GREATEST. Lo scan `refresh_fields_scan` non marca le date (confronto, non apply).
 4. Su evento `completed`/`failed`: aggiorna lo stato in `ingest.scraping_jobs`.
 
 ## Risposta
