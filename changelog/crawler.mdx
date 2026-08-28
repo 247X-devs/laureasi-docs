@@ -5,9 +5,15 @@ description: Changelog del crawler e delle edge functions (laureasi-crawler).
 
 # laureasi-crawler
 
-_Il changelog verrà popolato automaticamente alla prima GitHub Release._
+## v2026-08-28 — 2026-08-28
 
-Aggiunte recenti fuori release:
+### Features
+- Dopo un ingest pagina riuscito, marca `last_scraped_at` sulla sorgente e aggiorna `source_updated_at` sulle entità collegate
+
+### Fixes
+- `catalog:diff` eCampus: legge l'albero Cineca 2026 (`cdsSub`) e rinomina conservando il path
+
+Note operative (non in questa release):
 
 - Runbook [Riallineamento catalogo](/crawler/riallineamento-catalogo): `npm run catalog:diff` scrive un report locale (CSV + markdown) prima di apply.
 - IUL a.a. 2026/2027: WordPress pubblica slug `-2`; non basta cambiare l'anno nell'URL.
