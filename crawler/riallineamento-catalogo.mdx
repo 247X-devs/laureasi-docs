@@ -68,7 +68,7 @@ flowchart TD
 
 ## Adapter
 
-- **eCampus** — catalogo Cineca ` /api/v1/corsi?anno=YYYY `. Non usare lo status HTTP delle pagine corso: la SPA risponde 200 anche se il `cds` non esiste.
+- **eCampus** — catalogo Cineca `/api/v1/corsi?anno=YYYY`. Dal 2026 la risposta è un albero (`subgroups[].cds[].cdsSub[].cod`), non una lista piatta `{cds}`: `catalog:diff` cammina entrambi. La rinomina riscrive solo `/corsi/YYYY/` e lascia il resto del path (non forza `/insegnamenti` sui master). Non usare lo status HTTP delle pagine corso: la SPA risponde 200 anche se il `cds` non esiste. L'SSD sta sul dettaglio insegnamento (`/api/v1/insegnamento`). Se Cineca ha solo il percorso `comune`, lo script inserisce un piano **Statutario**. Per riempire SSD sui piani già in DB: `node scripts/ecampus-extract-paths.mjs --anno=2026 --enrich-ssd --dry-run`. Per lauree senza percorsi: `--extract-empty`.
 - **Anno nell'URL** — riscrittura + probe. Se il nuovo URL redirige al vecchio, l'anno non è pubblicato.
 - **Map** — Firecrawl Map dalla sorgente `universita`, filtrata dalle regex in `FIRECRAWL_MAP_URL_REGEX_BY_HOST`, poi probe HTTP.
 
@@ -79,7 +79,7 @@ La sitemap non è prova di esistenza. Pegaso ha elencato percorsi abilitanti che
 ## Trappole già viste
 
 - **Pegaso**: sitemap con pagine non pubblicate; non creare senza probe 200.
-- **eCampus**: SPA sempre-200; duplicati sullo stesso `cds` → una rinomina, il resto disattivato.
+- **eCampus**: SPA sempre-200; duplicati sullo stesso `cds` e stesso `entity_type` → una rinomina, il resto disattivato. Laurea e `piano_di_studi` sullo stesso CDS si rinomina entrambi. Se il parser Cineca non legge `cdsSub`, il diff vede 0 corsi e disattiva tutto. Per l'SSD usa `corso_percorso_id` dell'attività come `af_percorso`. Piano solo-`comune` → un percorso Statutario, non skip.
 - **IUL**: l'a.a. 2026/2027 è online, ma WordPress ha creato post nuovi con suffisso `-2` (LM-91 → `-2-2`). Riscrivere solo l'anno nell'URL redirige ancora al 2025/2026: serve rinomina slug, non `catalog:diff` year.
 - **San Raffaele**: coppie `-modalita-fad` / `-modalita-blended` fuse in una pagina.
 - **Cusano**: redirect 200 verso la pagina di categoria (soft-404): resta in `verifica`.
