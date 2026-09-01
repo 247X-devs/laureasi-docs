@@ -44,6 +44,21 @@ Solo gli utenti con ruolo **Admin** possono modificare queste impostazioni.
   </Step>
 </Steps>
 
+## Fonti dal sito
+
+Ogni form del sito crea un lead nel CMS. Il webhook parte alla creazione e n8n scrive su Aurora.
+
+| `source_form` | Dove sul sito | Canale Aurora |
+| --- | --- | --- |
+| `trova_laurea_quiz` | Quiz **Trova Laurea** | 1 |
+| `prenota_consulenza` | Pagina **Prenota una consulenza**; CTA **Prenota consulenza gratuita** su schede laurea, master, corso e agevolazioni | 2 |
+| `contatti` | Pagina **Contatti** | 3 |
+| `richiedi_informazioni` | Pulsante **Richiedi informazioni** su schede laurea, master, corso e ateneo | 3 |
+| `piano_di_studi` | **Richiedi il piano di studi** sulla scheda laurea, se il piano è ancora vuoto | 4 |
+| `segnalazione_inesattezza` | **Segnala un'inesattezza** in fondo alle schede | 5 |
+
+Sulle schede percorso il form porta anche `entity_id` e `university_id`, così Aurora riceve corso e ateneo.
+
 ## Cosa viene inviato
 
 Il payload include i dati del lead (nome, email, telefono, fonte, UTM, metadati) e, per il quiz, le informazioni collegate al risultato.
