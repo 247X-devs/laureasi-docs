@@ -5,7 +5,7 @@ description: Come funziona il test di orientamento Laureasi — scoring, ranking
 
 Questo documento descrive la logica con cui il **Test di Orientamento** di LaureaSì analizza le risposte dell'utente e propone i 5 percorsi più adatti.
 
-L'algoritmo assegna un **punteggio di compatibilità (0–100)** a ogni corso presente nel catalogo, sommando contributi positivi e negativi in base a 9 criteri di scoring (7 dal quiz, 2 dal CMS). Il risultato finale può essere ulteriormente raffinato da un modello di **Intelligenza Artificiale (GPT)** che valuta sfumature semantiche non catturabili da un semplice score numerico.
+L'algoritmo assegna un **punteggio di compatibilità (0–100)** a ogni corso presente nel catalogo, sommando contributi positivi e negativi in base a 10 criteri di scoring (8 dal quiz, 2 dal CMS). Il risultato finale può essere ulteriormente raffinato da un modello di **Intelligenza Artificiale (GPT)** che valuta sfumature semantiche non catturabili da un semplice score numerico.
 
 ## Diagramma 1 — Flusso generale
 
@@ -37,7 +37,8 @@ flowchart LR
     Q -->|"Agevolazioni"| C8["Convenzioni ateneo\n+10 / 0"]
     Q -.->|"Ateneo partner"| C9["is_partner CMS\n+8 / +14"]
     Q -.->|"Priorità ateneo"| C10["Pegaso / San Raffaele / Mercatorum\nfino a +18"]
-    C1 & C2 & C4 & C5 & C6 & C7 & C8 & C9 & C10 --> TOTAL["Punteggio finale 0-100"]
+    Q -->|"Provincia"| C11["Sede in provincia\n+8 / 0"]
+    C1 & C2 & C4 & C5 & C6 & C7 & C8 & C9 & C10 & C11 --> TOTAL["Punteggio finale 0-100"]
 ```
 
 ## Riepilogo criteri e pesi
@@ -53,6 +54,7 @@ flowchart LR
 | 7 | Agevolazioni | Passo 8 | 0 → +10 | Convenzioni ateneo compatibili; personalizzano anche il prezzo |
 | 8 | Ateneo Partner | CMS `is_partner` | 0 → +14 | **Leva principale** per prioritizzare atenei |
 | 9 | Priorità ateneo | ID università CMS | 0 → +18 | Pegaso +18, San Raffaele/Mercatorum +10 |
+| 10 | Sede in provincia | Passo anagrafica | +8 / 0 | Ateneo con almeno una sede nella provincia del lead |
 
 Per **crescita professionale** e **cambio carriera**, il ruolo si sceglie da una lista fissa (con campo **Altro** a testo libero). Il frontend invia un `matchText` arricchito; il ranking espande token con alias e sinonimi di dominio (`ROLE_TOKEN_ALIASES`, `ROLE_DOMAIN_SYNONYMS`) contro titolo, area e piano di studi.
 
@@ -93,7 +95,7 @@ Se l’utente seleziona una o più fasce (escl. “Nessuna di queste”), il pre
 
 ---
 
-*Versione 1.5 — Agosto 2026 — Uso interno riservato*
+*Versione 1.6 — Settembre 2026 — Uso interno riservato*
 
 I valori quiz (`obiettivo`, `livello`, professioni `matchText`, agevolazioni) vivono nel contratto
 `trovaLaureaQuiz.ts` (admin + frontend, da tenere allineati).
