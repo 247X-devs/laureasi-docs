@@ -46,7 +46,7 @@ Solo gli utenti con ruolo **Admin** possono modificare queste impostazioni.
 
 ## Cosa viene inviato
 
-Il payload include i dati del lead (nome, email, telefono, fonte, UTM, metadati) e, per il quiz, le informazioni collegate al risultato.
+Il payload include i dati del lead (nome, email, telefono, provincia, fonte, UTM, metadati) e, per il quiz, le informazioni collegate al risultato.
 
 n8n inoltra il contatto anche ad **Aurora CRM**. Non copiare gli id del CMS nei campi `ateneo` e `corso` del contatto: sono cataloghi diversi.
 
@@ -59,6 +59,7 @@ n8n inoltra il contatto anche ad **Aurora CRM**. Non copiare gli id del CMS nei 
 | `lead.metadata.entity_type` | Stesso metadata | Se vale `universita`, non cercare un corso: usa solo l'ateneo |
 | `quiz.results[0].id` | Quiz Trova Laurea | Fallback di `entity_id` se il metadata non c'è |
 | `quiz.results[0].universityId` | Quiz Trova Laurea | Fallback di `university_id` |
+| `quiz.contact.provincia` | Quiz Trova Laurea | `{ id, nome, sigla }` della provincia CMS. Assente/`null` sui lead non-quiz |
 
 ### Mappa atenei CMS → Aurora
 
