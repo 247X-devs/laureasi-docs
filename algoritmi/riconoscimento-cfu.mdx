@@ -1,0 +1,56 @@
+---
+title: Simulatore riconoscimento CFU
+description: Come Laureasi stima i CFU riconoscibili su una laurea di destinazione.
+---
+
+Usa questa pagina per capire **come** il simulatore costruisce la stima. Non è una delibera di ateneo.
+
+Versione regole: `cfu-sim-v1`.
+
+## Cosa fa
+
+Lo studente sceglie una **laurea di destinazione**, indica la classe MUR di provenienza e il libretto (nome, CFU, SSD), lascia i contatti e ottiene:
+
+- ogni materia del piano con stato **Convalidabile**, **Da integrare** o **Da sostenere**
+- CFU riconosciuti e restanti
+- anno di iscrizione stimato
+- retta **indicativa** (`da X €/anno × N anni`) se il CMS ha prezzo e durata
+
+Il form lead è obbligatorio **prima** del calcolo (`source_form`: `simulatore_cfu`).
+
+## Destinazioni ammesse
+
+Solo lauree (triennale, magistrale, ciclo unico) con piano di studi e **almeno il 90% delle materie con SSD**. Sotto soglia la laurea non compare in elenco.
+
+## Regole di matching
+
+Il motore parte dal **piano di destinazione**, non dal libretto.
+
+1. Normalizza l’SSD al codice MUR (ignora suffissi di ateneo; i compositi matchano su un pezzo).
+2. Stesso SSD: convalida piena se i CFU di provenienza coprono la destinazione o lo scarto è **al massimo 3 CFU**. Oltre, **da integrare**.
+3. Ogni riga del libretto si usa **una sola volta**.
+4. Prova finale, tirocinio e “altre conoscenze” non si auto-convalidano.
+5. Insegnamento a scelta: si copre con un esame avanzo, senza SSD, stessa regola CFU.
+
+La classe MUR di provenienza è contesto per il tutor, non un moltiplicatore percentuale.
+
+## Anno di iscrizione
+
+- Triennale: ≥90 CFU → 3°; ≥30 → 2°; altrimenti 1°
+- Magistrale: ≥40 → 2°; altrimenti 1°
+- Ciclo unico: `1 + floor(CFU / 30)`, tetto alla durata CMS (default 5)
+
+## Fuori scope (v1)
+
+- Master e corsi
+- Upload PDF del libretto
+- Abilità professionali, esoneri EIPASS / inglese B2
+- Confronto tra più atenei nella stessa simulazione
+
+## Disclaimer
+
+La stima è sui dati autocertificati. La decisione sul riconoscimento spetta agli organi accademici dell’ateneo.
+
+---
+
+*Versione 1.0 — Settembre 2026*
