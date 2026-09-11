@@ -11,7 +11,7 @@ Versione regole: `cfu-sim-v1`.
 
 ## Cosa fa
 
-Lo studente sceglie una **laurea di destinazione**, indica la classe MUR di provenienza e il libretto (nome, CFU, SSD), lascia i contatti e ottiene:
+Lo studente sceglie una **laurea di destinazione**, indica la classe MUR di provenienza e il libretto (nome, CFU, SSD: a mano o da PDF), lascia i contatti e ottiene:
 
 - ogni materia del piano con stato **Convalidabile**, **Da integrare** o **Da sostenere**
 - CFU riconosciuti e restanti
@@ -19,6 +19,10 @@ Lo studente sceglie una **laurea di destinazione**, indica la classe MUR di prov
 - retta **indicativa** (`da X €/anno × N anni`) se il CMS ha prezzo e durata
 
 Il form lead è obbligatorio **prima** del calcolo (`source_form`: `simulatore_cfu`).
+
+## Libretto PDF
+
+Al passo libretto puoi **caricare un PDF** (certificato ateneo, scansione o il modello Laureasi scaricabile dalla stessa pagina). Il simulatore precompila la tabella; tu rivedi e completi SSD e CFU mancanti. Il file resta sul lead in CMS (**Libretto PDF**), visibile solo agli editor. Il parse non crea un contatto: il documento si salva solo quando calcoli la stima.
 
 ## Destinazioni ammesse
 
@@ -44,10 +48,10 @@ La classe MUR di provenienza è contesto per il tutor, non un moltiplicatore per
 - Magistrale: ≥40 → 2°; altrimenti 1°
 - Ciclo unico: `1 + floor(CFU / 30)`, tetto alla durata CMS (default 5)
 
-## Fuori scope (v1)
+## Fuori scope
 
 - Master e corsi
-- Upload PDF del libretto
+- Foto JPG/PNG (solo PDF)
 - Abilità professionali, esoneri EIPASS / inglese B2
 - Confronto tra più atenei nella stessa simulazione
 
@@ -57,4 +61,4 @@ La stima è sui dati autocertificati. La decisione sul riconoscimento spetta agl
 
 ---
 
-*Versione 1.3 — Settembre 2026*
+*Versione 1.4 — Settembre 2026*

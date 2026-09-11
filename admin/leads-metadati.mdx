@@ -29,7 +29,7 @@ Esempi tipici (variano in base al form):
 | `university_id` | Id CMS dell'ateneo. n8n lo mappa sull'id Aurora, non lo copia così com'è |
 | `entity_type` | `laurea`, `master`, `corso` o `universita` |
 | Dati quiz | Risposte o contesto del test di orientamento. Per Trova Laurea include `quiz_answers.provincia` (`{ id, nome, sigla }`) |
-| Simulatore CFU | `source_form: simulatore_cfu`, destinazione, esami del libretto, `result` o `error` |
+| Simulatore CFU | `source_form: simulatore_cfu`, destinazione, esami del libretto, `result` o `error`. Se c’è un PDF: `librettoFile: { id, filename }` (il file si apre dal campo **Libretto PDF**, non da un URL pubblico) |
 
 ## Come usarlo
 
