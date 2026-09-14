@@ -1,9 +1,9 @@
 ---
 title: Simulatore riconoscimento CFU
-description: Come Laureasi stima i CFU riconoscibili su una laurea di destinazione.
+description: Come Laureasi confronta i corsi partner e stima i CFU riconoscibili.
 ---
 
-Usa questa pagina per capire **come** il simulatore costruisce la stima. Non è una delibera di ateneo.
+Usa questa pagina per capire **come** il simulatore costruisce la classifica. Non è una delibera di ateneo.
 
 Sul sito lo trovi in una sezione della **homepage**. Non è nel menu.
 
@@ -11,18 +11,27 @@ Versione regole: `cfu-sim-v1`.
 
 ## Cosa fa
 
-Lo studente sceglie una **laurea di destinazione**, indica la classe MUR di provenienza e il libretto (nome, CFU, SSD: a mano o da PDF), lascia i contatti e ottiene:
+Indichi il **tipo di laurea** (triennale, magistrale o ciclo unico), la classe MUR di provenienza, il libretto (nome, CFU, SSD: a mano o da PDF), i contatti e la **provincia**. Il simulatore confronta le lauree **partner** di quel tipo e mostra i **top 3** che bilanciano CFU riconosciuti e vicinanza geografica.
 
-- ogni materia del piano con stato **Convalidabile**, **Da integrare** o **Da sostenere**
-- CFU riconosciuti e restanti
-- anno di iscrizione stimato
-- retta **indicativa** (`da X €/anno × N anni`) se il CMS ha prezzo e durata
+Per ogni corso in classifica vedi:
 
-Il form lead è obbligatorio **prima** del calcolo (`source_form`: `simulatore_cfu`).
+- CFU riconosciuti e restanti, percentuale del piano, anno di iscrizione stimato
+- fascia geografica (provincia / regione / resto d’Italia)
+- il piano annotato (**Convalidabile**, **Da integrare**, **Da sostenere**) aprendo la scheda
 
-Dopo un calcolo riuscito il sito apre `/simulatore-cfu/{hash}` (pagina `noindex`). Chi ha il link rivede la stessa stima (destinazione, totali, tabella esami). Nome, email, telefono e PDF del libretto non sono sulla pagina pubblica.
+Il form lead è obbligatorio **prima** del calcolo (`source_form`: `simulatore_cfu`). La provincia si salva sul lead, come nel quiz Trova laurea.
 
-Ricevi anche un’email di sintesi (CFU riconosciuti/restanti, anno, retta se c’è) con il bottone **Apri la tua simulazione**.
+Dopo un calcolo con almeno un corso in classifica il sito apre `/simulatore-cfu/{hash}` (pagina `noindex`). Chi ha il link rivede la classifica. Nome, email, telefono e PDF del libretto non sono sulla pagina pubblica. I link salvati prima di questo flusso (una sola destinazione) restano leggibili.
+
+Ricevi anche un’email di sintesi (tre righe: corso, CFU, fascia geo) con il bottone **Apri la tua simulazione**.
+
+## Come si costruisce la classifica
+
+1. Pool: lauree partner eleggibili dello stesso tipo, ordine catalogo (Pegaso, Mercatorum, San Raffaele, altri partner). Tetto **40 lauree**.
+2. Per ogni laurea il motore `cfu-sim-v1` valuta i curricula; resta il percorso con più CFU riconosciuti.
+3. Punteggio: `0.55 × CFU riconosciuti (normalizzati sul pool) + 0.30 × geografia + 0.15 × partner`.
+4. Geografia dalle sedi CMS: stessa provincia = 1, stessa regione = 0.5, resto = 0.
+5. Boost partner: stesso ordine del catalogo, mappato 0–1. Pegaso vince a parità sostanziale, non a prescindere dal libretto.
 
 ## Libretto PDF
 
@@ -30,9 +39,9 @@ Al passo libretto puoi **caricare un PDF** (certificato ateneo, scansione o il m
 
 ## Destinazioni ammesse
 
-Solo lauree (triennale, magistrale, ciclo unico) con piano di studi e **almeno il 75% delle materie curriculari con SSD**. Prova finale, tirocinio e placeholder (`NN`) non entrano nel conteggio. Sotto soglia la laurea non compare in elenco.
+Solo lauree (triennale, magistrale, ciclo unico) con piano di studi e **almeno il 75% delle materie curriculari con SSD**. Prova finale, tirocinio e placeholder (`NN`) non entrano nel conteggio. Sotto soglia la laurea non entra nel confronto.
 
-A lista vuota vedi prima le lauree degli atenei partner (`is_partner`), con **Pegaso** in testa, poi Mercatorum e San Raffaele. Cercando per titolo, ateneo o classe restano visibili anche le altre lauree ammesse.
+In classifica ci sono solo atenei **partner**. L’elenco pubblico delle lauree simulabili resta disponibile all’API catalogo.
 
 ## Regole di matching
 
@@ -57,7 +66,9 @@ La classe MUR di provenienza è contesto per il tutor, non un moltiplicatore per
 - Master e corsi
 - Foto JPG/PNG (solo PDF)
 - Abilità professionali, esoneri EIPASS / inglese B2
-- Confronto tra più atenei nella stessa simulazione
+- Filtro per area di studio
+- Distanza in km
+- Atenei non partner in classifica
 
 ## Disclaimer
 
@@ -65,4 +76,4 @@ La stima è sui dati autocertificati. La decisione sul riconoscimento spetta agl
 
 ---
 
-*Versione 1.5 — Settembre 2026*
+*Versione 1.6 — Settembre 2026*
