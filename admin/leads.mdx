@@ -24,7 +24,7 @@ La tabella mostra le informazioni principali di ogni lead:
 | Nome | Nome e cognome del contatto |
 | Email | Indirizzo email |
 | Telefono | Numero di telefono (se fornito) |
-| Provincia | Provincia dichiarata nel quiz Trova Laurea o nel simulatore CFU (vuota sugli altri form) |
+| Provincia | Provincia dichiarata nel quiz Trova Laurea (vuota sul simulatore CFU e sugli altri form) |
 | Fonte | Da dove proviene (sito, form, landing, ecc.) |
 | Stato | Fase nel funnel (nuovo, contattato, qualificato…) |
 | Data | Quando è arrivato il lead |
@@ -71,11 +71,13 @@ Puoi esportare tutta la lista o solo le righe selezionate.
 
 ## Simulatore CFU
 
-I lead da `/simulatore-cfu` hanno `metadata.source_form` = `simulatore_cfu`. Nel JSON trovi tipo di laurea, libretto, `result.ranking` (top 3) o `error` se il calcolo è fallito dopo il salvataggio del contatto. Il campo **Provincia** è valorizzato come nel quiz.
+I lead da `/simulatore-cfu` hanno `metadata.source_form` = `simulatore_cfu`. Nel JSON trovi il corso scelto (se c’è), gli esami, `origin` se letto dal documento, `result.ranking` (corso scelto e affini, oppure top 3 partner, con score %) o `error` se il calcolo è fallito dopo il salvataggio del contatto. Il campo **Provincia** resta vuoto.
 
-Se la simulazione produce almeno un corso in classifica, il lead ha anche `result_hash`. Il link pubblico è `/simulatore-cfu/{hash}` (classifica, senza contatti). I link precedenti con una sola destinazione restano validi.
+Se la simulazione produce almeno un corso in elenco, il lead ha anche `result_hash`. Il link pubblico è `/simulatore-cfu/{hash}` (report, senza contatti).
 
-Se lo studente ha caricato un PDF, in scheda vedi il campo **Libretto PDF** (aprilo da lì). In metadati c’è anche `librettoFile` con `id` e `filename`. Il file non ha URL pubblico.
+Se lo studente ha caricato un documento, in scheda vedi **Libretto PDF** (aprilo da lì). In metadati c’è anche `librettoFile` con `id` e `filename`. Il file non ha URL pubblico.
+
+Se ha allegato la prova lavoro dopo il report, in scheda vedi **Prova esperienza lavorativa** (`work_experience_file`). Il matching non si ricalcola.
 
 ## Guide correlate
 

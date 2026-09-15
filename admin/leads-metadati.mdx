@@ -29,7 +29,7 @@ Esempi tipici (variano in base al form):
 | `university_id` | Id CMS dell'ateneo. n8n lo mappa sull'id Aurora, non lo copia così com'è |
 | `entity_type` | `laurea`, `master`, `corso` o `universita` |
 | Dati quiz | Risposte o contesto del test di orientamento. Per Trova Laurea include `quiz_answers.provincia` (`{ id, nome, sigla }`) |
-| Simulatore CFU | `source_form: simulatore_cfu`, `degreeType`, esami del libretto, `result.ranking` (top 3 con destinazione, piano annotato, summary, score in CMS) o `error`. I lead di successo hanno `provincia` e, se c’è classifica, `result_hash`. `metadata.result` è ciò che serve la GET pubblica (senza contatti, score né `librettoFile`). Snapshot legacy: `result.destination` + `subjects` + `summary`. Se c’è un PDF: `librettoFile: { id, filename }` |
+| Simulatore CFU | `source_form: simulatore_cfu`, corso scelto se presente, esami del libretto, `origin` se letto dal documento, `result.ranking` (scelto + affini oppure top 3 partner, con score %, summary e piano annotato) o `error`. Se c’è elenco: `result_hash`. `metadata.result` alimenta la pagina pubblica (senza contatti né file). Documento: `librettoFile: { id, filename }`. Prova lavoro: `workExperience` e in scheda **Prova esperienza lavorativa** (`work_experience_file`). Snapshot più vecchi: `result.destination` + `subjects` + `summary` |
 
 ## Come usarlo
 
