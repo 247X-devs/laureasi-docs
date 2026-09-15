@@ -1,47 +1,92 @@
 ---
 title: Simulatore riconoscimento CFU
-description: Come Laureasi confronta i corsi partner e stima i CFU riconoscibili.
+description: Come Laureasi stima i CFU riconoscibili da un documento di carriera.
 ---
 
-Usa questa pagina per capire **come** il simulatore costruisce la classifica. Non è una delibera di ateneo.
+Usa questa pagina per capire **come** il simulatore costruisce la stima. Non è una delibera di ateneo.
 
-Sul sito lo trovi in una sezione della **homepage**. Non è nel menu.
+Sul sito lo trovi in una sezione della **homepage**. Non è nel menu. Il percorso è `/simulatore-cfu`.
 
 Versione regole: `cfu-sim-v1`.
 
 ## Cosa fa
 
-Indichi il **tipo di laurea** (triennale, magistrale o ciclo unico), la classe MUR di provenienza, il libretto (nome, CFU, SSD: a mano o da PDF), i contatti e la **provincia**. Il simulatore confronta le lauree **partner** di quel tipo e mostra i **top 3** che bilanciano CFU riconosciuti e vicinanza geografica.
+In quattro passi indichi il **percorso** (tipo di laurea e, se lo sai, il corso), carichi o compili il **documento** di carriera, rivedi gli esami e lasci i **contatti**. Non chiediamo provincia né agevolazioni.
 
-Per ogni corso in classifica vedi:
+Il report stima a che anno entreresti, quanti esami restano e, se hai scelto un corso, se un affine partner copre di più. Il form lead è obbligatorio **prima** del calcolo (`source_form`: `simulatore_cfu`). Il parse del file non crea un contatto: il documento si salva solo quando calcoli la stima.
 
-- CFU riconosciuti e restanti, percentuale del piano, anno di iscrizione stimato
-- fascia geografica (provincia / regione / resto d’Italia)
-- il piano annotato (**Convalidabile**, **Da integrare**, **Da sostenere**) aprendo la scheda
+Dopo un calcolo con almeno un corso in elenco il sito apre `/simulatore-cfu/{hash}` (pagina `noindex`). Chi ha il link rivede il report. Nome, email, telefono e file non sono sulla pagina pubblica.
 
-Il form lead è obbligatorio **prima** del calcolo (`source_form`: `simulatore_cfu`). La provincia si salva sul lead, come nel quiz Trova laurea.
+Ricevi un’email di sintesi con i corsi del report e il bottone **Apri la tua simulazione**.
 
-Dopo un calcolo con almeno un corso in classifica il sito apre `/simulatore-cfu/{hash}` (pagina `noindex`). Chi ha il link rivede la classifica. Nome, email, telefono e PDF del libretto non sono sulla pagina pubblica. I link salvati prima di questo flusso (una sola destinazione) restano leggibili.
+## Wizard
 
-Ricevi anche un’email di sintesi (tre righe: corso, CFU, fascia geo) con il bottone **Apri la tua simulazione**.
+1. **Percorso** — «Hai già un’idea del percorso di laurea che vuoi intraprendere?»
+   - **Triennale**: scegli una laurea triennale o a ciclo unico. Il ciclo unico sta in questo elenco e mostra il tipo in etichetta (es. «Giurisprudenza (ciclo unico)»).
+   - **Magistrale**: solo lauree magistrali. I master non comparono.
+   - **Non ho ancora deciso**: nessun corso, vai avanti.
+   Su **Triennale** e **Magistrale** il corso è obbligatorio. Puoi scegliere anche un ateneo non partner.
+2. **Documento** — carica il riconoscimento crediti oppure scarica il modello, compilalo e ricaricalo. L’upload è opzionale: puoi aprire la tabella vuota e inserire gli esami a mano.
+3. **Revisione** — tabella nome, SSD, CFU. Almeno una riga completa per continuare. Se il parse ha letto ateneo, classe MUR o corso, li vedi in chip **sola lettura** sopra la tabella.
+4. **Contatti** — nome, email, telefono, privacy. Poi parte il calcolo.
 
-## Come si costruisce la classifica
+## Documento
 
-1. Pool: lauree partner eleggibili dello stesso tipo, ordine catalogo (Pegaso, Mercatorum, San Raffaele, altri partner). Tetto **40 lauree**.
-2. Per ogni laurea il motore `cfu-sim-v1` valuta i curricula; resta il percorso con più CFU riconosciuti.
-3. Punteggio: `0.55 × CFU riconosciuti (normalizzati sul pool) + 0.30 × geografia + 0.15 × partner`.
-4. Geografia dalle sedi CMS: stessa provincia = 1, stessa regione = 0.5, resto = 0.
-5. Boost partner: stesso ordine del catalogo, mappato 0–1. Pegaso vince a parità sostanziale, non a prescindere dal libretto.
+Due vie, stessa area di caricamento:
 
-## Libretto PDF
+1. Caricare il documento di riconoscimento dell’ateneo.
+2. Se non ce l’hai: **scaricare il modello**, compilarlo e ricaricarlo.
 
-Al passo libretto puoi **caricare un PDF** (certificato ateneo, scansione o il modello Laureasi scaricabile dalla stessa pagina). Il simulatore precompila la tabella; tu rivedi e completi SSD e CFU mancanti. Il file resta sul lead in CMS (**Libretto PDF**), visibile solo agli editor. Il parse non crea un contatto: il documento si salva solo quando calcoli la stima.
+Testo in pagina:
+
+> Hai già il documento di riconoscimento crediti? Caricalo. Altrimenti scarica il modello, compilalo e ricaricalo.
+
+Il modello è un PDF Laureasi compilabile (Preview o Acrobat). In intestazione trovi **Ateneo di provenienza**, **Classe MUR** e **Corso di laurea**. Segue la tabella esami: **Nome insegnamento**, **CFU**, **SSD**.
+
+Formati ammessi: PDF, JPG, PNG. Peso massimo **10 MB**. Un PDF può avere al massimo **8 pagine**. Un file alla volta: un nuovo upload sostituisce il precedente. Formato, peso o pagine fuori limite restano un errore in pagina, senza invio.
+
+Se il parse non legge esami (o il servizio non risponde), vedi: «Non siamo riusciti a leggere il documento. Inserisci gli esami a mano.» La tabella resta vuota e puoi completarla tu. Il file resta in memoria e si allega al calcolo.
+
+In CMS il documento finisce su **Libretto PDF**, visibile solo agli editor.
+
+## Come si costruisce il report
+
+Score di un corso: `recognizedCfu / planCfu` (CFU riconosciuti sul totale del piano). Il 100% è lecito. Niente geografia.
+
+Pool partner: fino a **40 lauree**, stesso ordine catalogo (Pegaso, Mercatorum, San Raffaele, altri partner). Master e corsi brevi restano fuori. Il motore `cfu-sim-v1` valuta i curricula; resta il percorso con più CFU riconosciuti.
+
+Due rami:
+
+| Ingresso | Cosa simuli |
+| --- | --- |
+| Hai scelto un corso | Sempre quel corso (anche non partner). Poi fino a **2 affini** partner: stessa area CMS, stesso tipo di laurea (affini usano il tipo CMS; un ciclo unico non prende affini triennali, e viceversa), score **strettamente maggiore**. Se nessuno batte la scelta, una sola scheda. |
+| Non hai deciso | Tipo inferito dalla classe MUR del documento (`L-…` triennale, `LM-…` magistrale, `LMG…` ciclo unico). Poi i **top 3** partner di quel tipo. Se la classe manca, top 3 misti. |
+
+Sotto l’hero del **corso attivo** (la tua scelta, oppure il #1 se non hai deciso) trovi le altre righe. Un clic su un affine lo rende attivo: le colonne e il piano si ricalcolano dallo snapshot, senza un secondo calcolo. Accordion **Vedi quali esami salti**: piano annotato del corso attivo, chiuso all’avvio.
+
+Se il pool è vuoto vedi uno stato vuoto: il contatto è comunque salvato.
+
+## Pagina risultato
+
+Due colonne:
+
+| | **Documento** | **Lavoro** (stima) |
+| --- | --- | --- |
+| Fonte | CFU convalidati dal libretto | Stessi CFU più un extra **6 / 12 / 18** |
+| Cosa vedi | Anno di iscrizione, CFU totali, esami residui, durata residua | Stesso schema sul totale stimato |
+| Controllo | — | Selettore 6 / 12 / 18. Default: il primo extra che alza l’anno; se nessuno alza, **12** |
+
+Gli extra da lavoro si sommano al **totale**, non rientrano nel matching esame-per-esame. Gli esami residui della colonna lavoro scendono di `floor(extra / 6)` rispetto al documento.
+
+Disclaimer sotto le colonne: i CFU da lavoro sono una stima; l’anno superiore non è vincolante finché l’ateneo non approva.
+
+Il bottone **Allega CV o descrivi l’esperienza** apre upload (stessi formati e limiti del documento) oppure una textarea. Serve uno dei due per salvare la prova. Non blocca la consultazione del report e **non ricalcola** il matching: aggiorna il lead già creato. In CMS il file è **Prova esperienza lavorativa** (`work_experience_file`).
 
 ## Destinazioni ammesse
 
 Solo lauree (triennale, magistrale, ciclo unico) con piano di studi e **almeno il 75% delle materie curriculari con SSD**. Prova finale, tirocinio e placeholder (`NN`) non entrano nel conteggio. Sotto soglia la laurea non entra nel confronto.
 
-In classifica ci sono solo atenei **partner**. L’elenco pubblico delle lauree simulabili resta disponibile all’API catalogo.
+Nel pool degli affini e del ramo «non deciso» ci sono solo atenei **partner**. Il corso che hai scelto al passo **Percorso** si simula comunque, anche se non è partner.
 
 ## Regole di matching
 
@@ -53,22 +98,25 @@ Il motore parte dal **piano di destinazione**, non dal libretto.
 4. Prova finale, tirocinio e “altre conoscenze” non si auto-convalidano.
 5. Insegnamento a scelta: si copre con un esame avanzo, senza SSD, stessa regola CFU.
 
-La classe MUR di provenienza è contesto per il tutor, non un moltiplicatore percentuale.
+La classe MUR di provenienza serve a inferire il tipo nel ramo «non deciso» e resta contesto per il tutor. Non è un moltiplicatore percentuale.
 
 ## Anno di iscrizione
+
+Default per tipo (invariati):
 
 - Triennale: ≥90 CFU → 3°; ≥30 → 2°; altrimenti 1°
 - Magistrale: ≥40 → 2°; altrimenti 1°
 - Ciclo unico: `1 + floor(CFU / 30)`, tetto alla durata CMS (default 5)
 
+In **Dettagli corso** puoi sovrascrivere le soglie con i campi opzionali `cfu_soglia_anno_2` … `cfu_soglia_anno_5`. Si usano solo gli anni entro la durata del corso. Valore assente o `≤ 0`: resta il default per tipo. Un campo compilato sostituisce solo quell’anno; gli altri restano al default. Non si interpolano i buchi.
+
 ## Fuori scope
 
-- Master e corsi
-- Foto JPG/PNG (solo PDF)
+- Master e corsi brevi
+- Provincia, geografia, agevolazioni nel funnel
 - Abilità professionali, esoneri EIPASS / inglese B2
-- Filtro per area di studio
 - Distanza in km
-- Atenei non partner in classifica
+- Account utente o storico simulazioni
 
 ## Disclaimer
 
@@ -76,4 +124,4 @@ La stima è sui dati autocertificati. La decisione sul riconoscimento spetta agl
 
 ---
 
-*Versione 1.6 — Settembre 2026*
+*Versione 1.7 — Settembre 2026*
