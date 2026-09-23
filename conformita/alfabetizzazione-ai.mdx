@@ -1,0 +1,52 @@
+---
+title: Alfabetizzazione IA
+description: Cosa deve sapere chi in Laureasi lavora con i sistemi di intelligenza artificiale — obbligo dell'art. 4 dell'AI Act.
+---
+
+L'art. 4 del Regolamento (UE) 2024/1689 chiede a fornitori e deployer di garantire un «livello sufficiente di alfabetizzazione in materia di IA» al personale che si occupa del funzionamento e dell'uso dei sistemi. È in vigore **dal 2 febbraio 2025** e non prevede una certificazione: prevede che le persone sappiano quello che serve al loro ruolo, e che l'azienda possa dimostrarlo.
+
+Questa pagina è il contenuto minimo di quella formazione.
+
+## Cosa deve sapere chiunque tocchi il prodotto
+
+<Steps>
+  <Step title="Dove c'è IA nel nostro prodotto">
+    Quattro sistemi, elencati nel [registro](/conformita/registro-sistemi-ai). Due si vedono dall'utente (riordino dei risultati del quiz, lettura del libretto), due no (contenuti delle schede, arricchimento del catalogo).
+  </Step>
+  <Step title="Cosa può sbagliare">
+    I modelli linguistici producono output plausibili, non verificati. Nel nostro caso significa: esami letti male o omessi da un libretto scansionato, motivazioni che suonano convincenti ma non corrispondono al piano di studi, descrizioni che generalizzano. Nessun output di un modello va trattato come un dato verificato.
+  </Step>
+  <Step title="Perché la disclosure non è opzionale">
+    Se un utente non sa che sta leggendo un testo generato, non può calibrare quanta fiducia dargli. È la ragione dell'obbligo, prima ancora che una formalità: togliere un riquadro di disclosure «perché appesantisce la pagina» è una modifica che va discussa, non fatta.
+  </Step>
+  <Step title="Cosa non mandiamo ai modelli">
+    Mai dati di contatto (nome, email, telefono) e mai dati non necessari all'elaborazione. Se una nuova funzionalità richiede di inviare qualcosa di diverso da quanto già previsto, va rivalutata prima.
+  </Step>
+  <Step title="Dove finisce la nostra responsabilità">
+    I nostri strumenti non decidono ammissioni né riconoscimenti di crediti: producono stime orientative. Questo confine è ciò che tiene i sistemi fuori dal regime dell'alto rischio, e va difeso anche nel copy: non promettiamo mai un esito.
+  </Step>
+</Steps>
+
+## In più, per chi sviluppa
+
+- Ogni nuovo uso di un modello si registra in `laureasi-admin/src/lib/ai/registry.ts` **prima** di andare in produzione.
+- A ogni modifica sostanziale di un prompt si incrementa `promptVersion`: è quello che rende ricostruibile un output già consegnato.
+- Gli output che raggiungono una persona vanno marcati con `data-ai-generated="true"` e accompagnati da `AiDisclosure` o `AiContentNotice`.
+- I fallback non devono mentire: se il modello non ha risposto e il risultato viene dal ranking locale, la disclosure IA non va mostrata.
+
+## In più, per chi scrive i contenuti
+
+- I testi generati per le schede sono una **bozza**. Rileggerli è parte del lavoro, non un controllo facoltativo.
+- I dati oggettivi (costi, durata, sedi, classe ministeriale) non si prendono mai dal testo generato: si prendono dalla fonte ufficiale.
+- Se un testo generato afferma qualcosa che non trovi nella fonte, va tolto.
+
+## In più, per chi parla con gli utenti
+
+- Se un utente contesta un risultato, ha diritto a una revisione umana: non va rimandato allo strumento.
+- Le segnalazioni arrivano come lead con `source_form: segnalazione_inesattezza` e vanno lavorate, non archiviate.
+
+## Tracciamento
+
+<Note>
+  L'elenco di chi ha ricevuto questa formazione, con ruolo e data, è tenuto internamente e rivisto a ogni ingresso in team.
+</Note>

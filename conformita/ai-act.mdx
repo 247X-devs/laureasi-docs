@@ -1,0 +1,108 @@
+---
+title: Conformità all'AI Act
+description: Come Laureasi si colloca rispetto al Regolamento (UE) 2024/1689 — ruolo, classificazione del rischio e obblighi applicati.
+---
+
+Questa pagina è il documento di riferimento interno sul Regolamento (UE) 2024/1689 (**AI Act**). Serve a tre cose: sapere quali sistemi di IA usiamo, con quale ruolo giuridico, e perché li abbiamo classificati come li abbiamo classificati.
+
+<Note>
+  Questo documento è redatto dal team di prodotto e descrive lo stato tecnico dei sistemi. **Non costituisce un parere legale.**
+</Note>
+
+## Ruolo di Laureasi
+
+Laurea Si S.r.l. mette in servizio sistemi di IA **sotto il proprio nome e marchio**, integrando modelli di terzi tramite API. Rispetto all'AI Act questo significa:
+
+| Ruolo | Si applica? | Perché |
+| --- | --- | --- |
+| **Fornitore** (art. 3(3)) | Sì | I sistemi sono messi in servizio con il marchio Laureasì. |
+| **Deployer** (art. 3(4)) | Sì | Li usiamo anche sotto la nostra autorità. |
+| **Fornitore di modelli GPAI** (capo V) | No | I modelli sono di OpenAI; noi li consumiamo via API senza modificarli né riaddestrarli. |
+
+Fornitore dei modelli: **OpenAI Ireland Ltd.**, che agisce come responsabile del trattamento ai sensi del GDPR.
+
+## Sistemi in uso
+
+L'elenco completo, con modello, versione del prompt e presidio umano, è nel [registro dei sistemi di IA](/conformita/registro-sistemi-ai). In sintesi:
+
+<CardGroup cols={2}>
+  <Card title="Riordino risultati quiz" icon="route">
+    Sceglie e ordina i cinque percorsi finali e scrive la motivazione mostrata all'utente.
+  </Card>
+  <Card title="Lettura del libretto" icon="scan-text">
+    Estrae l'elenco degli esami dal documento caricato nel Simulatore CFU.
+  </Card>
+  <Card title="Contenuti descrittivi" icon="pen-line">
+    Redige le sezioni narrative delle schede di lauree, master e corsi.
+  </Card>
+  <Card title="Arricchimento catalogo" icon="database">
+    Filtra URL, estrae percorsi di studio e assegna aree disciplinari nel crawler.
+  </Card>
+</CardGroup>
+
+## Classificazione del rischio
+
+### Pratiche vietate (art. 5)
+
+Nessuna. Non usiamo tecniche subliminali o manipolative, non sfruttiamo vulnerabilità legate a età o condizione, non facciamo social scoring, riconoscimento delle emozioni o categorizzazione biometrica.
+
+<Note>
+  Va tenuto presente un punto di attenzione, di natura più consumeristica che AI Act: il ranking incorpora criteri commerciali. Perché non scivoli verso la nozione di pratica manipolativa, quei criteri devono restare **dichiarati** — ed è la ragione della sezione «Come ordiniamo i percorsi» sulla pagina `/trasparenza`.
+</Note>
+
+### Alto rischio (Allegato III) — valutazione art. 6(4)
+
+Il punto da esaminare è l'**Allegato III, punto 3, lettera (c)**: sistemi destinati a essere usati «per valutare il livello di istruzione appropriato che una persona riceverà o a cui potrà accedere, nel contesto di o all'interno di istituti di istruzione e formazione professionale».
+
+Il Simulatore CFU è il sistema che più vi si avvicina, perché stima l'anno di iscrizione e i crediti riconoscibili.
+
+**Conclusione: i nostri sistemi non ricadono nell'Allegato III.** Le ragioni:
+
+<Steps>
+  <Step title="Laureasì non è un istituto di istruzione">
+    Non eroghiamo formazione, non rilasciamo titoli e non siamo un ente di formazione professionale. La lettera (c) circoscrive l'ambito agli istituti di istruzione e formazione; noi siamo un portale informativo e comparativo terzo.
+  </Step>
+  <Step title="Non determiniamo accesso né ammissione">
+    La decisione sull'immatricolazione e sul riconoscimento dei crediti è assunta autonomamente dall'ateneo, che la formalizza al momento dell'iscrizione. Il nostro output non entra in quella procedura e non è trasmesso all'ateneo come valutazione.
+  </Step>
+  <Step title="L'output è dichiaratamente non vincolante">
+    La stima è accompagnata su ogni schermata dal disclaimer che rinvia la decisione all'ateneo, ed è presentata come orientamento, non come valutazione.
+  </Step>
+  <Step title="La valutazione non è sulla persona">
+    Il modello estrae dati da un documento (nome esame, CFU, SSD). Il confronto con il piano di studi e il calcolo dei crediti sono deterministici e ispezionabili, non affidati al modello.
+  </Step>
+</Steps>
+
+<Warning>
+  **La deroga dell'art. 6(3) non è la nostra difesa.** L'ultimo comma dell'art. 6(3) esclude la deroga quando il sistema effettua profilazione di persone fisiche, e il Test di Orientamento profila (situazione lavorativa, aspirazioni professionali, preferenze). L'argomento che regge è quello sopra: siamo fuori dall'ambito soggettivo della lettera (c), non dentro una deroga.
+</Warning>
+
+Ai sensi dell'art. 6(4) questa valutazione va **documentata**, ed è la funzione di questa pagina. L'eventuale registrazione nella banca dati UE prevista dall'art. 49(2) è gestita separatamente.
+
+### Trasparenza (art. 50)
+
+È il regime che ci si applica davvero.
+
+| Obbligo | Dove lo assolviamo |
+| --- | --- |
+| Art. 50(1) — informare che si interagisce con un'IA | Badge sul risultato del quiz, riquadro informativo con consenso prima del caricamento nel Simulatore CFU. |
+| Art. 50(2) — marcatura leggibile dalla macchina degli output sintetici | Attributo `data-ai-generated="true"` sui contenuti generati e sui riquadri di disclosure. |
+| Art. 50(4) — dichiarare i testi generati o manipolati | Nota in calce alle sezioni descrittive delle schede. |
+| Art. 50(5) — informazione chiara alla prima esposizione | Riquadri posizionati insieme al contenuto, non in fondo alla pagina o in una policy separata. |
+
+### Alfabetizzazione (art. 4)
+
+Obbligo in vigore dal 2 febbraio 2025. Vedi [Alfabetizzazione IA](/conformita/alfabetizzazione-ai).
+
+## Scadenze
+
+| Data | Cosa si applica |
+| --- | --- |
+| 2 febbraio 2025 | Divieti (art. 5) e alfabetizzazione (art. 4). |
+| 2 agosto 2025 | Obblighi per i modelli GPAI, governance, sanzioni. |
+| 2 agosto 2026 | Trasparenza (art. 50) e sistemi ad alto rischio dell'Allegato III. |
+| 2 agosto 2027 | Sistemi ad alto rischio dell'Allegato I. |
+
+<Note>
+  Le date sono quelle del regolamento come pubblicato. Il pacchetto «digital omnibus» proposto dalla Commissione può aver spostato alcuni termini relativi all'alto rischio; non incide sugli obblighi di trasparenza, che sono quelli che ci riguardano.
+</Note>

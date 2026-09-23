@@ -1,0 +1,89 @@
+---
+title: Registro dei sistemi di IA
+description: Elenco dei sistemi di intelligenza artificiale usati da Laureasi, con finalità, modello, presidio umano e disclosure verso l'utente.
+---
+
+Il registro vive in due posti che devono restare allineati:
+
+- **nel codice**, in `laureasi-admin/src/lib/ai/registry.ts`, che è la fonte usata a runtime per marcare gli output;
+- **qui**, in forma leggibile per chi non apre il repository.
+
+Quando si aggiunge un sistema di IA, o si cambia in modo sostanziale un prompt, si aggiornano entrambi e si incrementa `promptVersion`.
+
+<Note>
+  La versione del prompt viene persistita insieme a ogni output consegnato a un utente (nei metadati del lead, campo `ai`). È ciò che rende ricostruibile a posteriori **con quale modello e quali istruzioni** è stato prodotto un risultato già mostrato.
+</Note>
+
+## 1. Riordino dei risultati del Test di Orientamento
+
+| | |
+| --- | --- |
+| **ID** | `quiz_rerank` |
+| **Dove** | `laureasi-admin/src/app/api/trova-laurea/recommend/route.ts` |
+| **Finalità** | Sceglie e ordina i percorsi finali fra i candidati già selezionati dall'algoritmo di punteggio, e redige la motivazione mostrata all'utente. |
+| **Fornitore / modello** | OpenAI Ireland Ltd. — `gpt-4o` (override: `OPENAI_MODEL`) |
+| **Dati trasmessi** | Risposte al quiz e termini di profilo formativo/professionale. Nessun dato di contatto. |
+| **Classificazione** | Trasparenza (art. 50). Non Allegato III. |
+| **Disclosure** | Badge sul primo risultato, riquadro in calce ai risultati, pagina `/trasparenza`. |
+| **Presidio umano** | Criteri di punteggio e catalogo definiti dalla redazione. L'utente può segnalare un risultato errato e ottenere la revisione di un tutor. |
+| **Degradazione** | Se il modello non risponde entro il timeout, il servizio prosegue con il solo ranking locale e la disclosure IA non viene mostrata. |
+
+## 2. Lettura del libretto (Simulatore CFU)
+
+| | |
+| --- | --- |
+| **ID** | `libretto_parse` |
+| **Dove** | `laureasi-admin/src/lib/cfuRecognition/completeLibrettoLlm.ts` |
+| **Finalità** | Estrae dal documento caricato l'elenco degli esami (nome, CFU, SSD) e l'ateneo di provenienza. |
+| **Fornitore / modello** | OpenAI Ireland Ltd. — `gpt-4o`, testo e visione (override: `OPENAI_CFU_PARSE_MODEL`) |
+| **Dati trasmessi** | Il contenuto del file caricato. Il prompt istruisce il modello a ignorare matricola e codice fiscale e a non riprodurli. Nessun dato di contatto. |
+| **Classificazione** | Trasparenza (art. 50). Non Allegato III: vedi la valutazione in [Conformità all'AI Act](/conformita/ai-act). |
+| **Disclosure** | Riquadro informativo con **consenso esplicito prima del caricamento**, riquadro sul risultato, pagina `/trasparenza`. |
+| **Presidio umano** | L'utente rivede e corregge a mano l'elenco estratto prima di ottenere la stima. Il calcolo dei crediti è deterministico. |
+
+<Warning>
+  Il ramo **visione** (scansioni e fotografie) è meno affidabile del ramo testo: su documenti scansionati può introdurre esami o CFU non presenti. È una ragione in più per cui il passo di revisione manuale non va rimosso.
+</Warning>
+
+## 3. Contenuti descrittivi delle schede
+
+| | |
+| --- | --- |
+| **ID** | `editorial_content` |
+| **Dove** | `laureasi-crawler/supabase/functions/webhook-ingest/ai-content-production/index.ts` |
+| **Finalità** | Redige le sezioni narrative di lauree, master e corsi (`presentazione`, `obiettivi`, `fa per te se`, `sbocchi occupazionali`) a partire dai dati ufficiali degli atenei. |
+| **Fornitore / modello** | OpenAI Ireland Ltd. — `gpt-5-mini` |
+| **Dati trasmessi** | Solo dati pubblici di catalogo. Nessun dato personale. |
+| **Classificazione** | Trasparenza (art. 50(2) e 50(4)). |
+| **Disclosure** | Nota in calce al testo sulla scheda e attributo `data-ai-generated="true"` nel markup. |
+| **Presidio umano** | Contenuti modificabili dalla redazione nel CMS. I dati oggettivi (costi, durata, sedi, riconoscimento ministeriale) non provengono dal modello. |
+
+## 4. Arricchimento del catalogo (crawler)
+
+| | |
+| --- | --- |
+| **ID** | `catalog_enrichment` |
+| **Dove** | `shared/aiFilterUrls.ts`, `shared/extractDegreePaths.ts`, `assign-areas-to-entities` |
+| **Finalità** | Filtra gli URL da analizzare, estrae i percorsi di studio dalle pagine degli atenei, assegna le aree disciplinari. |
+| **Fornitore / modello** | OpenAI Ireland Ltd. — `gpt-5-mini` |
+| **Dati trasmessi** | Contenuto di pagine web pubbliche. Nessun dato personale. |
+| **Classificazione** | Rischio minimo. Fuori dall'ambito dell'art. 50: non produce output rivolti a una persona fisica. |
+| **Disclosure** | Nessuna dovuta. |
+| **Presidio umano** | I dati importati sono revisionabili e correggibili dal CMS. |
+
+## Come si aggiunge un sistema
+
+<Steps>
+  <Step title="Registralo nel codice">
+    Aggiungi la voce in `laureasi-admin/src/lib/ai/registry.ts`, compilando anche `riskAssessment` e `userDisclosure`.
+  </Step>
+  <Step title="Traccia la provenienza">
+    Fai in modo che l'output persista `aiProvenance(<chiave>)` accanto al risultato.
+  </Step>
+  <Step title="Decidi la disclosure">
+    Se l'output raggiunge una persona, va dichiarato alla prima esposizione: usa `AiDisclosure` o `AiContentNotice` nel frontend.
+  </Step>
+  <Step title="Aggiorna questa pagina e /trasparenza">
+    Il registro interno e la pagina pubblica devono raccontare la stessa cosa.
+  </Step>
+</Steps>

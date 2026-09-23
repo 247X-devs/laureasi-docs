@@ -105,6 +105,10 @@
           {
             "group": "Orientamento e ranking",
             "pages": ["algoritmi/index", "algoritmi/orientamento", "algoritmi/riconoscimento-cfu"]
+          },
+          {
+            "group": "Conformità",
+            "pages": ["conformita/ai-act", "conformita/registro-sistemi-ai", "conformita/alfabetizzazione-ai"]
           }
         ]
       },
